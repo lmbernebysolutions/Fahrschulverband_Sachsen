@@ -38,7 +38,7 @@ export function GeschaeftsstelleSection({
 
   return (
     <div className="mt-12 grid gap-6 md:grid-cols-2">
-      {geschaeftsstelle.mitarbeiter.map((m) => (
+      {geschaeftsstelle.mitarbeiter.map((m, index) => (
         <PersonCardWithImage
           key={m.name}
           name={m.name}
@@ -46,16 +46,14 @@ export function GeschaeftsstelleSection({
           email={m.email}
           imagePath={settings.imageAssignments?.[m.slotId]?.imagePath}
         >
-          <details className="group/details">
+          <details className="group/details" open={index === 0}>
             <summary className="flex cursor-pointer list-none items-center gap-2 py-1 text-sm font-medium text-neutral-700 hover:text-neutral-900 [&::-webkit-details-marker]:hidden">
               <ChevronDown className="size-4 shrink-0 text-neutral-500 transition-transform group-open/details:rotate-180" />
               <span>Aufgabengebiete</span>
             </summary>
-            <ul className="mt-2 space-y-1 pl-6 text-sm text-neutral-600" role="list">
+            <ul className="mt-2 list-disc space-y-1 pl-6 text-sm text-neutral-600" role="list">
               {m.aufgaben.map((a) => (
-                <li key={a} className="relative pl-2 before:absolute before:left-0 before:top-[0.5em] before:block before:size-1 before:rounded-full before:bg-primary-500 before:content-['']">
-                  {a}
-                </li>
+                <li key={a}>{a}</li>
               ))}
             </ul>
           </details>

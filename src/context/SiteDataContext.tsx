@@ -43,9 +43,10 @@ const STORAGE_KEYS = {
   lastSync: "lsf_lastSync",
 } as const;
 
-// Persistenz: API unter /api/content/[type] (news, seminars, fahrschulmarkt, membership-fees, settings)
-// steht bereit; Context nutzt aktuell localStorage. Migration: Daten aus API laden (GET),
-// Änderungen per POST zurückschreiben.
+// Persistenz: Settings (inkl. Bildzuweisungen) werden von der API geladen und dorthin
+// geschrieben, damit alle Geräte dasselbe sehen. localStorage dient als Fallback/Cache.
+
+const SETTINGS_API = "/api/content/settings";
 
 function loadFromStorage<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
@@ -64,6 +65,30 @@ function saveToStorage(key: string, value: unknown): void {
     localStorage.setItem(key, JSON.stringify(value));
   } catch {
     // ignore
+  }
+}
+
+async function fetchSettingsFromApi(): Promise<SiteSettings | null> {
+  try {
+    const res = await fetch(SETTINGS_API);
+    if (!res.ok) return null;
+    const data = (await res.json()) as SiteSettings;
+    return data ?? null;
+  } catch {
+    return null;
+  }
+}
+
+async function saveSettingsToApi(settings: SiteSettings): Promise<boolean> {
+  try {
+    const res = await fetch(SETTINGS_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(settings),
+    });
+    return res.ok;
+  } catch {
+    return false;
   }
 }
 
@@ -127,6 +152,19 @@ export function SiteDataProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<SiteSettings>(() =>
     loadFromStorage(STORAGE_KEYS.settings, initialSettings)
   );
+
+  /** Settings von API laden, damit alle Geräte dieselben Bildzuweisungen sehen */
+  useEffect(() => {
+    let cancelled = false;
+    fetchSettingsFromApi().then((apiSettings) => {
+      if (cancelled || !apiSettings) return;
+      setSettings(apiSettings);
+      saveToStorage(STORAGE_KEYS.settings, apiSettings);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   const [membershipFees, setMembershipFeesState] = useState<FeeRow[]>(() =>
     loadFromStorage(STORAGE_KEYS.membershipFees, initialMembershipFees)
   );
@@ -380,6 +418,9 @@ export function SiteDataProvider({ children }: { children: React.ReactNode }) {
       setSettings((prev) => {
         const next = { ...prev, ...updates };
         persist(STORAGE_KEYS.settings, next);
+        saveSettingsToApi(next).catch(() => {
+          // Server schreibgeschützt (z. B. Vercel): weiterhin nur localStorage
+        });
         return next;
       });
     },
