@@ -384,7 +384,7 @@ export default function AdminBilderPage() {
                 : "4/3"
           }
           uploadedImages={uploaded}
-          onAssign={(imagePath) => {
+          onAssign={(imagePath, _objectPosition, fromExistingGallery) => {
             updateSettings({
               imageAssignments: {
                 ...settings.imageAssignments,
@@ -392,7 +392,7 @@ export default function AdminBilderPage() {
               },
             });
             setUploaded((prev) =>
-              prev.includes(imagePath) ? prev : [...prev, imagePath]
+              fromExistingGallery ? prev : prev.includes(imagePath) ? prev : [...prev, imagePath]
             );
             setToast({ message: "Bild zugewiesen.", variant: "success" });
           }}

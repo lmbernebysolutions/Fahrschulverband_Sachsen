@@ -45,7 +45,8 @@ export interface ImageAssignModalProps {
   slotLabel: string;
   uploadedImages: string[];
   aspectRatio?: "4/3" | "16/9" | "3/4" | "auto";
-  onAssign: (imagePath: string, objectPosition?: string) => void;
+  /** imagePath, optional objectPosition, optional: true = Bild kam aus Galerie (zugeschnitten) → nicht erneut in Galerie eintragen */
+  onAssign: (imagePath: string, objectPosition?: string, fromExistingGallery?: boolean) => void;
   onClose: () => void;
 }
 
@@ -171,7 +172,7 @@ export function ImageAssignModal({
       }
 
       if (result.success) {
-        onAssign(result.path);
+        onAssign(result.path, undefined, !!selectedExistingPath);
         onClose();
       } else {
         setError(result.error ?? "Upload fehlgeschlagen.");
