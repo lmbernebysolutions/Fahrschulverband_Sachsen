@@ -24,7 +24,7 @@ export function NewsCard({
     <Link
       href={`/aktuelles/${slug}`}
       className={cn(
-        "group flex flex-col rounded-xl bg-white p-6 shadow-card",
+        "group flex flex-col rounded-xl bg-white p-4 shadow-card sm:p-6",
         "cursor-pointer transition-all duration-200",
         "border-l-4 border-l-transparent hover:-translate-y-0.5 hover:shadow-hover hover:border-l-primary-500"
       )}

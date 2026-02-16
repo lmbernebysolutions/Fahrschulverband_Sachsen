@@ -10,6 +10,12 @@ Beim ersten Aufruf erscheint eine Zugangsabfrage. Ohne gültiges Passwort ist ke
 - Ohne gesetztes `SITE_PASSWORD` ist der Passwortschutz deaktiviert (nur für lokale Entwicklung sinnvoll).
 - Siehe `.env.example`.
 
+## Responsive (Mobile-first)
+
+- **Breakpoints (Tailwind):** `sm` 640px, `md` 768px, `lg` 1024px, `xl` 1280px. Kritische UI (Navigation, Haupt-CTA) ist unterhalb `lg` für Touch optimiert.
+- **Container:** Einheitlich `max-w-7xl` mit `px-4 sm:px-6 lg:px-8`.
+- **Touch-Ziele:** Klickbare Elemente mind. 44–48px (WCAG); CSS-Variable `--touch-target-min: 48px` in `globals.css`.
+
 ## Getting Started
 
 First, run the development server:

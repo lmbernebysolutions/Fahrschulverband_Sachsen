@@ -26,7 +26,7 @@ export default function Home() {
           <p className="mt-2 text-neutral-600">
             Wählen Sie Ihren Bereich
           </p>
-          <div className="mt-12 grid gap-8 lg:grid-cols-2">
+          <div className="mt-12 grid gap-6 sm:gap-8 lg:grid-cols-2">
             <Link
               href="/fuer-fahrschulen"
               className="group flex flex-col rounded-xl bg-white p-8 shadow-card transition-all border-l-4 border-l-transparent hover:-translate-y-0.5 hover:shadow-hover hover:border-l-primary-500"
@@ -64,7 +64,7 @@ export default function Home() {
       {/* Verband-Intro */}
       <section className="bg-neutral-50 py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
+          <div className="grid gap-8 md:gap-16 lg:grid-cols-2 lg:items-center">
             <PlaceholderImage
               slotId="home.verbandsgebaeude"
               label="Verbandsgebäude"

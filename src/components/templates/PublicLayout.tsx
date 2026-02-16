@@ -13,7 +13,7 @@ export function PublicLayout({ children }: PublicLayoutProps) {
         Zum Inhalt springen
       </a>
       <Header />
-      <main id="main-content" className="min-h-0 flex-1" tabIndex={-1}>
+      <main id="main-content" className="min-h-0 min-w-0 flex-1" tabIndex={-1}>
         {children}
       </main>
       <Footer />

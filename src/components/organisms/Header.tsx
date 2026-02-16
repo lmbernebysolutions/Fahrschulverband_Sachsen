@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Mail, Menu, Phone, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/atoms";
 import { siteContent } from "@/lib/siteContent";
 import { useSiteData } from "@/context/SiteDataContext";
@@ -13,6 +13,18 @@ import { cn } from "@/lib/utils";
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+  /** Body-Scroll sperren, wenn Hamburger-Menü offen (nur Menü scrollt) */
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
   const { settings, websiteNav } = useSiteData();
   const pathname = usePathname();
   const nav = websiteNav ?? { service: [], main: [] };
@@ -34,35 +46,35 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-20 shadow-sm">
-      {/* TopBar – #9d9d9d mit Weiß für Kontrast */}
+    <header className="sticky top-0 z-20 shadow-sm [padding-left:env(safe-area-inset-left)] [padding-right:env(safe-area-inset-right)]">
+      {/* TopBar – kompakt, eine Zeile (Desktop + Mobile) */}
       <div
-        className="py-2 text-sm text-white"
+        className="py-1.5 text-white"
         style={{ backgroundColor: "var(--color-header-footer)" }}
       >
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap items-center gap-6">
+        <div className="mx-auto flex max-w-7xl flex-nowrap items-center justify-between gap-2 px-4 text-xs sm:gap-3 sm:px-6 sm:text-sm lg:px-8">
+          <div className="flex min-w-0 shrink items-center gap-2 sm:gap-4">
             <a
               href={`tel:${settings.contactPhone.replace(/\s/g, "")}`}
-              className="flex items-center gap-2 text-white hover:text-white/90"
+              className="flex shrink-0 items-center gap-1.5 text-white hover:text-white/90"
             >
-              <Phone className="size-4" aria-hidden />
-              <span>{settings.contactPhone}</span>
+              <Phone className="size-4 shrink-0" aria-hidden />
+              <span className="truncate">{settings.contactPhone}</span>
             </a>
             <a
               href={`mailto:${settings.contactEmail}`}
-              className="flex items-center gap-2 text-white hover:text-white/90"
+              className="flex shrink-0 items-center gap-1.5 text-white hover:text-white/90"
             >
-              <Mail className="size-4" aria-hidden />
-              <span>{settings.contactEmail}</span>
+              <Mail className="size-4 shrink-0" aria-hidden />
+              <span className="hidden truncate sm:inline">{settings.contactEmail}</span>
             </a>
           </div>
-          <nav className="flex flex-wrap gap-4" aria-label="Service-Navigation">
+          <nav className="flex shrink-0 items-center gap-2 sm:gap-3" aria-label="Service-Navigation">
             {(nav.service.length ? nav.service : siteContent.nav.service).map((item) => (
               <Link
                 key={"id" in item ? (item as { id: string }).id : (item as { href: string }).href}
                 href={item.href}
-                className="text-white hover:text-white/90"
+                className="whitespace-nowrap text-white hover:text-white/90"
               >
                 {item.label}
               </Link>
@@ -76,7 +88,7 @@ export function Header() {
         <div className="mx-auto flex max-w-7xl items-end justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <Link
             href="/"
-            className="-mb-14 shrink-0"
+            className="-mb-14 shrink-0 lg:-mb-14 max-lg:mb-0"
             aria-label="Startseite"
           >
             <Image
@@ -84,7 +96,7 @@ export function Header() {
               alt="Landesverband Sächsischer Fahrlehrer e.V."
               width={280}
               height={112}
-              className="h-24 w-auto object-contain object-bottom"
+              className="h-20 w-auto object-contain object-bottom sm:h-24"
               priority
             />
           </Link>
@@ -179,10 +191,10 @@ export function Header() {
           </button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu – nur hier scrollen (Body-Scroll ist gesperrt) */}
         {mobileOpen && (
-          <div className="border-t border-neutral-200 bg-white lg:hidden">
-            <nav className="mx-auto max-w-7xl px-4 py-4" aria-label="Mobile Navigation">
+          <div className="max-h-[calc(100dvh-8rem)] overflow-y-auto overscroll-contain border-t border-neutral-200 bg-white lg:hidden">
+            <nav className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8" aria-label="Mobile Navigation">
               {(nav.main.length ? nav.main : siteContent.nav.main).map((item) => (
                 <div key={"id" in item ? (item as { id: string }).id : item.href} className="border-b border-neutral-100">
                   <Link

@@ -46,7 +46,12 @@ const navGroups: NavGroup[] = [
   },
 ];
 
-export function AdminSidebar() {
+export interface AdminSidebarProps {
+  /** Called when a nav link is clicked (e.g. to close drawer on mobile) */
+  onClose?: () => void;
+}
+
+export function AdminSidebar({ onClose }: AdminSidebarProps = {}) {
   const pathname = usePathname();
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     "Inhalte bearbeiten": true,
@@ -59,10 +64,11 @@ export function AdminSidebar() {
   };
 
   return (
-    <aside className="w-64 shrink-0 border-r border-neutral-200 bg-white shadow-sm sm:w-80">
+    <aside className="h-full w-full overflow-y-auto">
       <nav className="flex flex-col py-4" aria-label="Admin-Navigation">
         <Link
           href="/losleben-admin"
+          onClick={onClose}
           className={cn(
             "flex min-h-[56px] items-center gap-3 px-6 py-4 text-xl font-medium transition-all duration-200",
             pathname === "/losleben-admin"
@@ -100,6 +106,7 @@ export function AdminSidebar() {
                       <Link
                         key={item.href}
                         href={item.href}
+                        onClick={onClose}
                         className={cn(
                           "flex min-h-[56px] items-center gap-3 px-6 py-3 text-xl transition-all duration-200",
                           isActive

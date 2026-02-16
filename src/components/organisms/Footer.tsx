@@ -55,7 +55,7 @@ export function Footer() {
         style={{ backgroundColor: "var(--color-header-footer)" }}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12 lg:grid-cols-4">
             {/* Kontakt */}
             <div>
               <h3 className="text-sm font-semibold uppercase tracking-wider text-white">
@@ -93,7 +93,7 @@ export function Footer() {
                         <button
                           type="button"
                           onClick={() => toggleNav(item.href)}
-                          className="flex w-full items-center justify-between py-2 text-left text-white/95 hover:text-white"
+                          className="flex min-h-[44px] w-full items-center justify-between py-2 text-left text-white/95 hover:text-white"
                           aria-expanded={openNav[item.href] ?? false}
                         >
                           <span>{item.label}</span>

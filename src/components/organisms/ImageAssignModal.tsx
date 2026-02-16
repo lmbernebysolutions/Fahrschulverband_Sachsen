@@ -183,7 +183,7 @@ export function ImageAssignModal({
                   <p className="mb-2 text-xs text-neutral-500">
                     Ausschnitt: {aspectRatio === "auto" ? "3:1 (Hero-Bereich)" : aspectRatio === "16/9" ? "16:9" : aspectRatio === "3/4" ? "3:4" : "4:3"}.
                   </p>
-                  <div className="grid grid-cols-4 gap-2 sm:grid-cols-5">
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-5">
                     {uploadedImages.map((path) => (
                       <button
                         key={path}

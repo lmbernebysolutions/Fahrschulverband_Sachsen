@@ -28,7 +28,7 @@ export function DocumentCard({
   return (
     <div
       className={cn(
-        "flex flex-col gap-4 rounded-xl border border-neutral-200 bg-white p-6 shadow-card transition-all sm:flex-row sm:items-center sm:justify-between",
+        "flex flex-col gap-4 rounded-xl border border-neutral-200 bg-white p-4 shadow-card transition-all sm:flex-row sm:items-center sm:justify-between sm:p-6",
         "border-l-4 border-l-transparent hover:shadow-hover hover:border-l-primary-500",
         className
       )}

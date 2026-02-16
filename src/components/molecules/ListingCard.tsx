@@ -36,7 +36,7 @@ export function ListingCard({
   return (
     <article
       className={cn(
-        "rounded-xl border border-neutral-200 bg-white p-6 shadow-card transition-all",
+        "rounded-xl border border-neutral-200 bg-white p-4 shadow-card transition-all sm:p-6",
         "border-l-4 border-l-transparent hover:shadow-hover hover:border-l-primary-500",
         className
       )}

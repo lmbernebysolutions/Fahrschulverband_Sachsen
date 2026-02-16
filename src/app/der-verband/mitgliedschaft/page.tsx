@@ -27,7 +27,7 @@ export default function MitgliedschaftPage() {
       {/* Intro – Startseiten-Stil: 2-Spalten mit Bild links, Text rechts */}
       <section className="bg-white py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
+          <div className="grid gap-8 md:gap-16 lg:grid-cols-2 lg:items-center">
             <PlaceholderImage
               slotId="verband.mitgliedschaft"
               label="Verbandsmitglieder"

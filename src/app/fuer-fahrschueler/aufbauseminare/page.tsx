@@ -16,7 +16,7 @@ export default function AufbauseminarePage() {
     >
       <section className="bg-white py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
+          <div className="grid gap-8 md:gap-16 lg:grid-cols-2 lg:items-center">
             <div>
               <h2 className="text-2xl font-bold text-primary-500">
                 Was ist das Aufbauseminar für Fahranfänger?

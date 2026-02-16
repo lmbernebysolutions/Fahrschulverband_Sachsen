@@ -8,6 +8,8 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* WCAG / touch: minimum touch target (44–48px) */
+  --touch-target-min: 48px;
 }
 
 @theme inline {

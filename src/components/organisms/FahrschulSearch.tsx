@@ -31,7 +31,7 @@ export function FahrschulSearch() {
         onSubmit={handleSearch}
         className="relative -mt-8 rounded-xl bg-white p-6 shadow-lg lg:mx-8"
       >
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           <div className="relative">
             <MapPin className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-neutral-400" />
             <Input

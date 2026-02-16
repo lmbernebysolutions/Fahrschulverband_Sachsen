@@ -173,14 +173,14 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-xl bg-primary-50 p-8 lg:col-span-2">
+        <div className="rounded-xl bg-primary-50 p-4 sm:p-6 lg:col-span-2 lg:p-8">
           <h3 className="text-lg font-semibold text-neutral-800">
             Live-Vorschau
           </h3>
           <p className="mt-1 text-sm text-neutral-600">
             So sieht der Startbereich auf der Startseite aus:
           </p>
-          <div className="mt-6 scale-75 origin-top-left overflow-hidden rounded-xl border border-neutral-200 bg-gradient-to-br from-primary-500 to-primary-700 p-6 lg:scale-50">
+          <div className="mt-4 overflow-hidden rounded-xl border border-neutral-200 bg-gradient-to-br from-primary-500 to-primary-700 p-4 scale-[0.55] origin-top-left sm:mt-6 sm:scale-75 sm:p-6 lg:scale-50">
             <h1 className="text-2xl font-bold text-white">
               {startHeadline}
             </h1>

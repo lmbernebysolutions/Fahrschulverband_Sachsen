@@ -18,7 +18,7 @@ export function FeatureCard({
   return (
     <div
       className={cn(
-        "flex flex-col items-start gap-3 rounded-xl bg-white p-6 shadow-card transition-all duration-200",
+        "flex flex-col items-start gap-3 rounded-xl bg-white p-4 shadow-card transition-all duration-200 sm:p-6",
         "border-l-4 border-l-transparent hover:-translate-y-1 hover:shadow-hover hover:border-l-primary-500",
         className
       )}

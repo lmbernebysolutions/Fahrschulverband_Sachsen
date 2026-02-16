@@ -34,12 +34,12 @@ export function PasswordGate() {
 
   return (
     <div
-      className="flex min-h-screen items-center justify-center bg-neutral-100 px-4"
+      className="flex min-h-screen items-center justify-center bg-neutral-100 px-4 py-6"
       style={{ minHeight: "100dvh" }}
     >
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm rounded-xl border border-neutral-200 bg-white p-8 shadow-sm"
+        className="w-full max-w-sm rounded-xl border border-neutral-200 bg-white p-6 shadow-sm sm:p-8"
       >
         <h1 className="text-xl font-semibold text-neutral-800">
           Zugang geschützt
@@ -60,7 +60,7 @@ export function PasswordGate() {
               placeholder="Passwort"
               autoFocus
               autoComplete="current-password"
-              className="w-full rounded-lg border border-neutral-300 px-4 py-3 pr-24 text-neutral-800 placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+              className="min-h-[48px] w-full rounded-lg border border-neutral-300 px-4 py-3 pr-24 text-base text-neutral-800 placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               disabled={loading}
             />
             <label className="absolute right-2 top-1/2 flex -translate-y-1/2 cursor-pointer items-center gap-1.5 rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-800">
@@ -83,7 +83,7 @@ export function PasswordGate() {
         <Button
           type="submit"
           variant="primary"
-          className="mt-4 w-full"
+          className="mt-4 min-h-[48px] w-full"
           disabled={loading || !password.trim()}
         >
           {loading ? "Prüfe…" : "Zugang anfordern"}

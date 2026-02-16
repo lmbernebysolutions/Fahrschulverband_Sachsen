@@ -110,14 +110,20 @@ export function EditableTable<T extends { id: string }>({
 
   return (
     <div className={cn("overflow-x-auto", className)}>
-      <table className="w-full border-2 border-neutral-300">
+      <p className="mb-2 text-sm text-neutral-500 md:sr-only" role="status">
+        Tabelle horizontal scrollbar – nach rechts wischen für weitere Spalten.
+      </p>
+      <table className="w-full min-w-[600px] border-2 border-neutral-300">
         <thead className="bg-neutral-100">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
+              {headerGroup.headers.map((header, i) => (
                 <th
                   key={header.id}
-                  className="border-b-2 border-neutral-300 p-4 text-left text-xl font-semibold text-neutral-800"
+                  className={cn(
+                    "border-b-2 border-neutral-300 p-3 text-left text-base font-semibold text-neutral-800 sm:p-4 sm:text-xl",
+                    i === 0 && "sticky left-0 z-10 bg-neutral-100 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]"
+                  )}
                 >
                   {flexRender(
                     header.column.columnDef.header,
@@ -134,8 +140,14 @@ export function EditableTable<T extends { id: string }>({
               key={row.id}
               className="border-b border-neutral-200 bg-white transition-colors hover:bg-neutral-50"
             >
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="p-4 text-lg text-neutral-800">
+              {row.getVisibleCells().map((cell, i) => (
+                <td
+                  key={cell.id}
+                  className={cn(
+                    "p-3 text-base text-neutral-800 sm:p-4 sm:text-lg",
+                    i === 0 && "sticky left-0 z-10 bg-white shadow-[2px_0_4px_-2px_rgba(0,0,0,0.08)]"
+                  )}
+                >
                   {flexRender(
                     cell.column.columnDef.cell,
                     cell.getContext()
