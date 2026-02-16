@@ -1,7 +1,6 @@
 "use client";
 
 import { Badge, Button } from "@/components/atoms";
-import { formatDate } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
 export interface EventCardProps {
@@ -15,12 +14,25 @@ export interface EventCardProps {
   onRegister?: () => void;
 }
 
-function formatDay(isoDate: string): string {
-  return new Date(isoDate).getDate().toString();
-}
+/** Datumsbereich für Vorschau: Monat nie doppelt, einheitliche Abkürzungen (Okt., Nov.). */
+function formatEventDateRange(dateStart: string, dateEnd: string): { dayLine: string; monthLine: string } {
+  const dStart = new Date(dateStart);
+  const dEnd = new Date(dateEnd);
+  const dayS = dStart.getDate();
+  const dayE = dEnd.getDate();
+  const sameDay = dateStart === dateEnd;
+  const sameMonth = dStart.getMonth() === dEnd.getMonth() && dStart.getFullYear() === dEnd.getFullYear();
 
-function formatMonth(isoDate: string): string {
-  return new Date(isoDate).toLocaleDateString("de-DE", { month: "short" });
+  const monthLong = (d: Date) => d.toLocaleDateString("de-DE", { month: "long" });
+  const monthShort = (d: Date) => d.toLocaleDateString("de-DE", { month: "short" }).replace(/\.$/, "") + ".";
+
+  if (sameDay) {
+    return { dayLine: dayS.toString(), monthLine: monthLong(dStart) };
+  }
+  if (sameMonth) {
+    return { dayLine: `${dayS}. – ${dayE}.`, monthLine: monthLong(dStart) };
+  }
+  return { dayLine: `${dayS}. ${monthShort(dStart)} – ${dayE}. ${monthShort(dEnd)}`, monthLine: "" };
 }
 
 export function EventCard({
@@ -33,7 +45,7 @@ export function EventCard({
   availableSlots,
   onRegister,
 }: EventCardProps) {
-  const isSameDay = dateStart === dateEnd;
+  const { dayLine, monthLine } = formatEventDateRange(dateStart, dateEnd);
 
   return (
     <article
@@ -44,13 +56,17 @@ export function EventCard({
       )}
     >
       <div className="flex shrink-0 flex-col rounded-lg bg-primary-50 px-4 py-3 text-center">
-        <span className="text-2xl font-bold text-primary-700">
-          {formatDay(dateStart)}
+        <span className={cn(
+          "font-bold leading-tight text-primary-700",
+          monthLine ? "text-2xl" : "text-sm"
+        )}>
+          {dayLine}
         </span>
-        <span className="text-sm font-medium text-primary-600">
-          {formatMonth(dateStart)}
-          {!isSameDay && ` – ${formatMonth(dateEnd)}`}
-        </span>
+        {monthLine && (
+          <span className="mt-1 text-sm font-medium text-primary-600">
+            {monthLine}
+          </span>
+        )}
       </div>
 
       <div className="min-w-0 flex-1">

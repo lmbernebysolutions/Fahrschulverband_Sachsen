@@ -5,6 +5,7 @@ import Link from "next/link";
 import { PenSquare, RefreshCw } from "lucide-react";
 import { useSiteData } from "@/context/SiteDataContext";
 import { Button, Input } from "@/components/atoms";
+import { Toast } from "@/components/molecules";
 import { formatDate } from "@/lib/utils";
 
 export default function AdminDashboardPage() {
@@ -20,6 +21,7 @@ export default function AdminDashboardPage() {
   const [startHeadline, setStartHeadline] = useState(settings.heroHeadline);
   const [startText, setStartText] = useState(settings.heroSubtext);
   const [startButtonText, setStartButtonText] = useState(settings.heroCtaText);
+  const [toast, setToast] = useState<{ message: string; variant: "success" | "error" } | null>(null);
 
   const handleSaveStartbereich = () => {
     updateSettings({
@@ -27,6 +29,7 @@ export default function AdminDashboardPage() {
       heroSubtext: startText,
       heroCtaText: startButtonText,
     });
+    setToast({ message: "Startbereich gespeichert.", variant: "success" });
   };
 
   const activeSeminars = seminars.filter((s) => s.isOpen).length;
@@ -34,6 +37,9 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="space-y-8">
+      {toast && (
+        <Toast variant={toast.variant} message={toast.message} onDismiss={() => setToast(null)} />
+      )}
       <div>
         <h1 className="text-2xl font-bold text-neutral-900">
           Willkommen, Peter

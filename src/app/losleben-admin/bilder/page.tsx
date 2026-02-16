@@ -23,6 +23,7 @@ import {
 } from "@/lib/imageUsage";
 import { ImageAssignModal } from "@/components/organisms/ImageAssignModal";
 import { useSiteData } from "@/context/SiteDataContext";
+import { Toast } from "@/components/molecules";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/atoms";
 import type { ImageSlotId, ImagePageId } from "@/lib/imageUsage";
@@ -42,6 +43,7 @@ export default function AdminBilderPage() {
   const [error, setError] = useState<string | null>(null);
   const [assignModalSlot, setAssignModalSlot] = useState<ImageSlotId | null>(null);
   const [pageFilter, setPageFilter] = useState<ImagePageId | "all">("all");
+  const [toast, setToast] = useState<{ message: string; variant: "success" | "error" } | null>(null);
 
   const loadImages = useCallback(async () => {
     setLoading(true);
@@ -65,8 +67,10 @@ export default function AdminBilderPage() {
         const result = await uploadImage(formData);
         if (result.success) {
           setUploaded((prev) => [...prev, result.path]);
+          setToast({ message: "Bild hochgeladen.", variant: "success" });
         } else {
           setError(result.error);
+          setToast({ message: result.error ?? "Upload fehlgeschlagen.", variant: "error" });
           break;
         }
       }
@@ -90,9 +94,11 @@ export default function AdminBilderPage() {
           if (a.imagePath === imagePath) delete next[slotId];
         }
         updateSettings({ imageAssignments: next });
+        setToast({ message: "Bild gelöscht.", variant: "success" });
         await loadImages();
       } else {
         setError(result.error);
+        setToast({ message: result.error ?? "Löschen fehlgeschlagen.", variant: "error" });
       }
     },
     [settings.imageAssignments, updateSettings, loadImages]
@@ -126,6 +132,9 @@ export default function AdminBilderPage() {
 
   return (
     <div className="space-y-8">
+      {toast && (
+        <Toast variant={toast.variant} message={toast.message} onDismiss={() => setToast(null)} />
+      )}
       <div>
         <h1 className="text-2xl font-bold text-neutral-900">Bilder</h1>
         <p className="mt-1 text-neutral-500">
@@ -359,6 +368,7 @@ export default function AdminBilderPage() {
             setUploaded((prev) =>
               prev.includes(imagePath) ? prev : [...prev, imagePath]
             );
+            setToast({ message: "Bild zugewiesen.", variant: "success" });
           }}
           onClose={() => setAssignModalSlot(null)}
         />

@@ -55,7 +55,7 @@ export default function AdminEinstellungenPage() {
       )}
 
       <div className="space-y-8">
-        <div className="rounded-xl bg-white p-8 shadow-card">
+        <div className="rounded-xl bg-white p-4 shadow-card sm:p-6 lg:p-8">
           <h2 className="text-lg font-semibold text-neutral-800">
             Startbereich (Startseite oben)
           </h2>
@@ -103,7 +103,7 @@ export default function AdminEinstellungenPage() {
           </div>
         </div>
 
-        <div className="rounded-xl bg-white p-8 shadow-card">
+        <div className="rounded-xl bg-white p-4 shadow-card sm:p-6 lg:p-8">
           <h2 className="text-lg font-semibold text-neutral-800">
             Kontaktdaten
           </h2>

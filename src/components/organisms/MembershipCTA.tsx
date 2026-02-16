@@ -16,16 +16,16 @@ export function MembershipCTA({ className }: MembershipCTAProps) {
   return (
     <section
       className={cn(
-        "bg-primary-500 py-20 text-white",
+        "bg-primary-500 py-12 text-white sm:py-16 lg:py-20",
         className
       )}
     >
       <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-        <h2 className="text-2xl font-bold">{headline}</h2>
-        <p className="mx-auto mt-4 max-w-2xl text-lg opacity-90">{text}</p>
+        <h2 className="text-xl font-bold sm:text-2xl">{headline}</h2>
+        <p className="mx-auto mt-3 max-w-2xl text-base opacity-90 sm:mt-4 sm:text-lg">{text}</p>
         <Link
           href="/der-verband/mitgliedschaft"
-          className="mt-8 inline-flex min-h-[52px] items-center justify-center rounded-md bg-white px-8 py-3.5 text-lg font-semibold text-primary-600 transition-colors hover:bg-neutral-100"
+          className="mt-6 inline-flex min-h-[48px] min-w-[48px] items-center justify-center rounded-md bg-white px-6 py-3 text-base font-semibold text-primary-600 transition-colors hover:bg-neutral-100 sm:mt-8 sm:px-8 sm:py-3.5 sm:text-lg"
         >
           {buttonText}
         </Link>
