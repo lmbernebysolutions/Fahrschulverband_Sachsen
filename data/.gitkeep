@@ -1,0 +1,4 @@
+# JSON-Daten werden von der API unter /api/content/[type] verwaltet.
+# Beim ersten GET werden Dateien aus den Initialdaten (mockData) angelegt:
+# news.json, seminars.json, fahrschulmarkt.json, membership-fees.json, settings.json
+# Backups landen in data/backups/
