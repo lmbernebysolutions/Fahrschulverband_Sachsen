@@ -279,7 +279,7 @@ export function ImageAssignModal({
           {step === "crop" && previewUrl && (
             <div className="space-y-4">
               <p className="text-sm text-neutral-600">
-                Ziehen Sie den Rahmen, um den Ausschnitt zu wählen.
+                Ziehen Sie den Rahmen oder die Ecken, um Ausschnitt und Größe zu wählen. Das Seitenverhältnis bleibt dabei erhalten.
               </p>
               <div className="max-h-[400px] overflow-auto rounded-lg border border-neutral-200 bg-neutral-50">
                 <ReactCrop
