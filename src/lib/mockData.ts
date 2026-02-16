@@ -348,10 +348,10 @@ export const initialSettings: SiteSettings = {
   contactFax: "0351 478 68-12",
   contactAddress: "Bernhardstr. 35, 01187 Dresden",
   imageAssignments: {},
-  mitgliedschaftIntro: "",
-  mitgliedschaftBeitrittHeadline: "",
-  mitgliedschaftBeitrittText: "",
-  mitgliedschaftBeitrittButton: "",
+  mitgliedschaftIntro: "Die Mitgliedschaft im Verband. In einer Verbandsfahrschule sind Sie immer gut beraten. Laut unserer Satzung können alle von der Behörde zugelassenen Fahrlehrer Mitglied des Verbandes werden. Der Antrag ist schriftlich zu stellen. Fördernde Mitglieder können alle natürlichen und juristischen Personen werden, die die Ziele des Verbandes anerkennen und unterstützen.",
+  mitgliedschaftBeitrittHeadline: "Haben wir Ihr Interesse geweckt?",
+  mitgliedschaftBeitrittText: "Dann freuen wir uns auf Ihre Mitgliedschaft. An dieser Stelle können Sie das Beitrittsformular im PDF-Format downloaden. Bitte füllen Sie es aus und schicken Sie es anschließend per FAX an: 0351 47868-12, per Post: Landesverband Sächsischer Fahrlehrer e.V., Bernhardstr. 35, 01187 Dresden, oder per Mail an: info@fahrlehrerverband-sachsen.de an uns zurück.",
+  mitgliedschaftBeitrittButton: "Beitrittserklärung Sächsischer Fahrlehrerverband (PDF)",
 };
 
 /** Mitgliedschaftsbeiträge (editierbar, Excel-Import) – aus siteContent.mitgliedschaft.beitrag.saetze */

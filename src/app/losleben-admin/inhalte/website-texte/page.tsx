@@ -321,7 +321,7 @@ export default function WebsiteTextePage() {
       {activeSection === "mitgliedschaft" && (
         <div className="rounded-xl border border-neutral-200 bg-white p-8 shadow-sm">
           <h2 className="text-xl font-bold text-neutral-900">Seite „Mitgliedschaft“</h2>
-          <p className="mt-1 text-neutral-600">Texte, die auf /der-verband/mitgliedschaft angezeigt werden. Leer = Standardtext aus der Redaktion.</p>
+          <p className="mt-1 text-neutral-600">Texte, die auf /der-verband/mitgliedschaft angezeigt werden.</p>
           <div className="mt-6 space-y-6">
             <div>
               <Label className="text-base">Intro-Text (oberer Bereich)</Label>
@@ -329,7 +329,7 @@ export default function WebsiteTextePage() {
                 value={settings.mitgliedschaftIntro ?? ""}
                 onChange={(e) => updateSettings({ mitgliedschaftIntro: e.target.value })}
                 rows={4}
-                placeholder="Leer lassen = Standardtext"
+                placeholder="Intro-Text"
                 className="mt-2 text-lg"
               />
             </div>
@@ -338,7 +338,7 @@ export default function WebsiteTextePage() {
               <Input
                 value={settings.mitgliedschaftBeitrittHeadline ?? ""}
                 onChange={(e) => updateSettings({ mitgliedschaftBeitrittHeadline: e.target.value })}
-                placeholder="z. B. Haben wir Ihr Interesse geweckt?"
+                placeholder="Überschrift Beitritt-Bereich"
                 className="mt-2 min-h-[52px] text-lg"
               />
             </div>
@@ -348,7 +348,7 @@ export default function WebsiteTextePage() {
                 value={settings.mitgliedschaftBeitrittText ?? ""}
                 onChange={(e) => updateSettings({ mitgliedschaftBeitrittText: e.target.value })}
                 rows={4}
-                placeholder="Leer lassen = Standardtext"
+                placeholder="Beitritt-Text"
                 className="mt-2 text-lg"
               />
             </div>
@@ -357,7 +357,7 @@ export default function WebsiteTextePage() {
               <Input
                 value={settings.mitgliedschaftBeitrittButton ?? ""}
                 onChange={(e) => updateSettings({ mitgliedschaftBeitrittButton: e.target.value })}
-                placeholder="z. B. Beitrittserklärung (PDF)"
+                placeholder="Button-Text"
                 className="mt-2 min-h-[52px] text-lg"
               />
             </div>
