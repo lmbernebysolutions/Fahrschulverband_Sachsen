@@ -39,6 +39,7 @@ export default function AdminBilderPage() {
   const [uploaded, setUploaded] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<{ current: number; total: number } | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [assignModalSlot, setAssignModalSlot] = useState<ImageSlotId | null>(null);
@@ -61,21 +62,28 @@ export default function AdminBilderPage() {
       if (acceptedFiles.length === 0) return;
       setUploading(true);
       setError(null);
-      for (const file of acceptedFiles) {
-        const formData = new FormData();
-        formData.append("file", file);
-        const result = await uploadImage(formData);
-        if (result.success) {
-          setUploaded((prev) => [...prev, result.path]);
-          setToast({ message: "Bild hochgeladen.", variant: "success" });
-        } else {
-          setError(result.error);
-          setToast({ message: result.error ?? "Upload fehlgeschlagen.", variant: "error" });
-          break;
+      setUploadProgress({ current: 0, total: acceptedFiles.length });
+      try {
+        for (let i = 0; i < acceptedFiles.length; i++) {
+          setUploadProgress({ current: i + 1, total: acceptedFiles.length });
+          const file = acceptedFiles[i];
+          const formData = new FormData();
+          formData.append("file", file);
+          const result = await uploadImage(formData);
+          if (result.success) {
+            setUploaded((prev) => [...prev, result.path]);
+            setToast({ message: "Bild hochgeladen.", variant: "success" });
+          } else {
+            setError(result.error ?? "Upload fehlgeschlagen.");
+            setToast({ message: result.error ?? "Upload fehlgeschlagen.", variant: "error" });
+            break;
+          }
         }
+        await loadImages();
+      } finally {
+        setUploading(false);
+        setUploadProgress(null);
       }
-      setUploading(false);
-      await loadImages();
     },
     [loadImages]
   );
@@ -163,11 +171,15 @@ export default function AdminBilderPage() {
           <input {...getInputProps()} />
           <Upload className="size-10 text-primary-500" aria-hidden />
           <p className="mt-3 text-neutral-600">
-            {isDragActive
-              ? "Dateien hier ablegen …"
-              : "Dateien hierher ziehen oder klicken"}
+            {uploading && uploadProgress
+              ? `Wird hochgeladen … ${uploadProgress.current} von ${uploadProgress.total}`
+              : isDragActive
+                ? "Dateien hier ablegen …"
+                : "Dateien hierher ziehen oder klicken"}
           </p>
-          <p className="mt-1 text-xs text-neutral-500">PNG, JPG, WebP – max. 10 MB</p>
+          <p className="mt-1 text-xs text-neutral-500">
+            {uploading ? "Bitte warten, Zeitlimit 60 Sekunden pro Bild." : "PNG, JPG, WebP – max. 10 MB"}
+          </p>
         </div>
 
         {error && (

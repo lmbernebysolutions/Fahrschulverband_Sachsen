@@ -64,36 +64,38 @@ export default function AdminNewsPage() {
           <Link
             key={article.id}
             href={`/losleben-admin/news/${article.id}`}
-            className="flex items-center gap-4 rounded-xl border border-neutral-200 bg-white p-5 shadow-sm transition-all hover:border-primary-200 hover:shadow-md"
+            className="flex flex-col gap-3 rounded-xl border border-neutral-200 bg-white p-4 shadow-sm transition-all hover:border-primary-200 hover:shadow-md sm:flex-row sm:items-center sm:gap-4 sm:p-5"
           >
             <span
               className={`size-4 shrink-0 rounded-full ${article.isPublished ? "bg-green-500" : "bg-neutral-400"}`}
               title={article.isPublished ? "Publiziert" : "Entwurf"}
             />
             <div className="min-w-0 flex-1">
-              <p className="text-xl font-semibold text-neutral-800">
+              <p className="break-words text-lg font-semibold text-neutral-800 sm:text-xl">
                 {article.title}
               </p>
-              <p className="text-base text-neutral-500">
+              <p className="mt-0.5 text-sm text-neutral-500 sm:text-base">
                 {formatDate(article.date)}
               </p>
             </div>
-            <Badge variant="category">
-              {categories.find((c) => c.value === article.category)?.label ??
-                article.category}
-            </Badge>
-            <span className="flex items-center gap-2 text-primary-600">
-              <Pencil className="size-5" aria-hidden />
-              <span className="text-lg font-medium">Bearbeiten</span>
-            </span>
-            <button
-              type="button"
-              onClick={(e) => handleDelete(e, article.id)}
-              className="rounded-lg p-2 text-neutral-500 hover:bg-red-50 hover:text-red-600"
-              aria-label="Löschen"
-            >
-              <Trash2 className="size-5" />
-            </button>
+            <div className="flex flex-wrap items-center gap-2 border-t border-neutral-100 pt-3 sm:shrink-0 sm:border-0 sm:pt-0">
+              <Badge variant="category">
+                {categories.find((c) => c.value === article.category)?.label ??
+                  article.category}
+              </Badge>
+              <span className="flex items-center gap-1.5 text-primary-600 sm:gap-2">
+                <Pencil className="size-4 shrink-0 sm:size-5" aria-hidden />
+                <span className="text-base font-medium sm:text-lg">Bearbeiten</span>
+              </span>
+              <button
+                type="button"
+                onClick={(e) => handleDelete(e, article.id)}
+                className="ml-auto rounded-lg p-2 text-neutral-500 hover:bg-red-50 hover:text-red-600 sm:ml-0"
+                aria-label="Löschen"
+              >
+                <Trash2 className="size-4 sm:size-5" />
+              </button>
+            </div>
           </Link>
         ))}
         {news.length === 0 && (

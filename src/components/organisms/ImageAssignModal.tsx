@@ -108,37 +108,39 @@ export function ImageAssignModal({
 
     let result: { success: true; path: string } | { success: false; error: string };
 
-    const aspectStr = aspectRatio === "16/9" ? "16/9" : aspectRatio === "3/4" ? "3/4" : aspectRatio === "auto" ? "3/1" : "4/3";
+    try {
+      const aspectStr = aspectRatio === "16/9" ? "16/9" : aspectRatio === "3/4" ? "3/4" : aspectRatio === "auto" ? "3/1" : "4/3";
 
-    if (selectedFile) {
-      const formData = new FormData();
-      formData.append("file", selectedFile);
-      formData.append("cropX", String(crop.x));
-      formData.append("cropY", String(crop.y));
-      formData.append("cropW", String(crop.width));
-      formData.append("cropH", String(crop.height));
-      formData.append("aspectRatio", aspectStr);
-      result = await uploadImageWithCrop(formData);
-    } else if (selectedExistingPath) {
-      result = await cropExistingImage(
-        selectedExistingPath,
-        crop.x,
-        crop.y,
-        crop.width,
-        crop.height,
-        aspectStr
-      );
-    } else {
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        formData.append("cropX", String(crop.x));
+        formData.append("cropY", String(crop.y));
+        formData.append("cropW", String(crop.width));
+        formData.append("cropH", String(crop.height));
+        formData.append("aspectRatio", aspectStr);
+        result = await uploadImageWithCrop(formData);
+      } else if (selectedExistingPath) {
+        result = await cropExistingImage(
+          selectedExistingPath,
+          crop.x,
+          crop.y,
+          crop.width,
+          crop.height,
+          aspectStr
+        );
+      } else {
+        return;
+      }
+
+      if (result.success) {
+        onAssign(result.path);
+        onClose();
+      } else {
+        setError(result.error);
+      }
+    } finally {
       setUploading(false);
-      return;
-    }
-
-    setUploading(false);
-    if (result.success) {
-      onAssign(result.path);
-      onClose();
-    } else {
-      setError(result.error);
     }
   }, [selectedFile, selectedExistingPath, crop, aspectRatio, onAssign, onClose]);
 
@@ -274,7 +276,7 @@ export function ImageAssignModal({
                   onClick={handleCropAndAssign}
                   disabled={!crop || uploading}
                 >
-                  {uploading ? "Wird verarbeitet…" : "Zuschneiden & Zuweisen"}
+                  {uploading ? "Wird verarbeitet… (bitte warten)" : "Zuschneiden & Zuweisen"}
                 </Button>
               </div>
             </div>

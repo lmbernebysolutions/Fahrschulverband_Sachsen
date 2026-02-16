@@ -24,6 +24,20 @@ const MAX_SIZE_MB = 10;
 const MAX_WIDTH = 1920;
 const QUALITY = 85;
 const BLOB_PREFIX = "images/";
+/** Maximale Wartezeit für Upload/Crop (Sharp + Blob), danach Abbruch mit Fehlermeldung. */
+const UPLOAD_TIMEOUT_MS = 60_000;
+
+function withTimeout<T>(ms: number, promise: Promise<T>): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) =>
+      setTimeout(
+        () => reject(new Error("Upload-Zeit überschritten. Bitte erneut versuchen oder ein kleineres Bild wählen.")),
+        ms
+      )
+    ),
+  ]);
+}
 
 /** Ziel-Seitenverhältnis: exakt Container-Maße. Hero = 3:1. */
 const TARGET_ASPECTS = { "4/3": [4, 3], "16/9": [16, 9], "3/4": [3, 4], "3/1": [3, 1] } as const;
@@ -62,25 +76,30 @@ export async function uploadImage(formData: FormData): Promise<
 
   if (useBlob()) {
     try {
-      let pathname: string;
-      let data: Buffer;
-      let contentType: string = "image/webp";
-      try {
-        data = await sharp(buffer)
-          .resize(MAX_WIDTH, undefined, { withoutEnlargement: true })
-          .webp({ quality: QUALITY })
-          .toBuffer();
-        pathname = `${BLOB_PREFIX}${safeName}-${Date.now()}.webp`;
-      } catch {
-        const ext = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
-        data = buffer;
-        pathname = `${BLOB_PREFIX}${safeName}-${Date.now()}.${ext}`;
-        contentType = file.type;
-      }
-      const blob = await put(pathname, data, {
-        access: "public",
-        contentType,
-      });
+      const blob = await withTimeout(
+        UPLOAD_TIMEOUT_MS,
+        (async () => {
+          let pathname: string;
+          let data: Buffer;
+          let contentType: string = "image/webp";
+          try {
+            data = await sharp(buffer)
+              .resize(MAX_WIDTH, undefined, { withoutEnlargement: true })
+              .webp({ quality: QUALITY })
+              .toBuffer();
+            pathname = `${BLOB_PREFIX}${safeName}-${Date.now()}.webp`;
+          } catch {
+            const ext = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
+            data = buffer;
+            pathname = `${BLOB_PREFIX}${safeName}-${Date.now()}.${ext}`;
+            contentType = file.type;
+          }
+          return await put(pathname, data, {
+            access: "public",
+            contentType,
+          });
+        })()
+      );
       return { success: true, path: blob.url };
     } catch (e) {
       return {
@@ -151,25 +170,30 @@ export async function uploadImageWithCrop(formData: FormData): Promise<
 
   if (useBlob()) {
     try {
-      const img = sharp(buffer);
-      const meta = await img.metadata();
-      const w = meta.width ?? 1;
-      const h = meta.height ?? 1;
-      const left = Math.round((cropX / 100) * w);
-      const top = Math.round((cropY / 100) * h);
-      const width = Math.max(1, Math.round((cropW / 100) * w));
-      const height = Math.max(1, Math.round((cropH / 100) * h));
-      const targetWidth = width;
-      const targetHeight = Math.round((targetWidth * den) / num);
+      const blob = await withTimeout(
+        UPLOAD_TIMEOUT_MS,
+        (async () => {
+          const img = sharp(buffer);
+          const meta = await img.metadata();
+          const w = meta.width ?? 1;
+          const h = meta.height ?? 1;
+          const left = Math.round((cropX / 100) * w);
+          const top = Math.round((cropY / 100) * h);
+          const width = Math.max(1, Math.round((cropW / 100) * w));
+          const height = Math.max(1, Math.round((cropH / 100) * h));
+          const targetWidth = width;
+          const targetHeight = Math.round((targetWidth * den) / num);
 
-      const cropped = await img
-        .extract({ left: Math.max(0, left), top: Math.max(0, top), width, height })
-        .resize(targetWidth, targetHeight, { fit: "cover", position: "center" })
-        .webp({ quality: QUALITY })
-        .toBuffer();
+          const cropped = await img
+            .extract({ left: Math.max(0, left), top: Math.max(0, top), width, height })
+            .resize(targetWidth, targetHeight, { fit: "cover", position: "center" })
+            .webp({ quality: QUALITY })
+            .toBuffer();
 
-      const pathname = `${BLOB_PREFIX}${safeName}-${Date.now()}.webp`;
-      const blob = await put(pathname, cropped, { access: "public", contentType: "image/webp" });
+          const pathname = `${BLOB_PREFIX}${safeName}-${Date.now()}.webp`;
+          return await put(pathname, cropped, { access: "public", contentType: "image/webp" });
+        })()
+      );
       return { success: true, path: blob.url };
     } catch (e) {
       return {
@@ -229,29 +253,34 @@ export async function cropExistingImage(
 
   if (isBlobUrl && useBlob()) {
     try {
-      const res = await fetch(imagePath);
-      if (!res.ok) throw new Error("Bild konnte nicht geladen werden.");
-      const arrayBuffer = await res.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-      const img = sharp(buffer);
-      const meta = await img.metadata();
-      const w = meta.width ?? 1;
-      const h = meta.height ?? 1;
-      const left = Math.round((cropX / 100) * w);
-      const top = Math.round((cropY / 100) * h);
-      const width = Math.max(1, Math.round((cropW / 100) * w));
-      const height = Math.max(1, Math.round((cropH / 100) * h));
-      const targetWidth = width;
-      const targetHeight = Math.round((targetWidth * den) / num);
+      const blob = await withTimeout(
+        UPLOAD_TIMEOUT_MS,
+        (async () => {
+          const res = await fetch(imagePath);
+          if (!res.ok) throw new Error("Bild konnte nicht geladen werden.");
+          const arrayBuffer = await res.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
+          const img = sharp(buffer);
+          const meta = await img.metadata();
+          const w = meta.width ?? 1;
+          const h = meta.height ?? 1;
+          const left = Math.round((cropX / 100) * w);
+          const top = Math.round((cropY / 100) * h);
+          const width = Math.max(1, Math.round((cropW / 100) * w));
+          const height = Math.max(1, Math.round((cropH / 100) * h));
+          const targetWidth = width;
+          const targetHeight = Math.round((targetWidth * den) / num);
 
-      const cropped = await img
-        .extract({ left: Math.max(0, left), top: Math.max(0, top), width, height })
-        .resize(targetWidth, targetHeight, { fit: "cover", position: "center" })
-        .webp({ quality: QUALITY })
-        .toBuffer();
+          const cropped = await img
+            .extract({ left: Math.max(0, left), top: Math.max(0, top), width, height })
+            .resize(targetWidth, targetHeight, { fit: "cover", position: "center" })
+            .webp({ quality: QUALITY })
+            .toBuffer();
 
-      const pathname = `${BLOB_PREFIX}cropped-${Date.now()}.webp`;
-      const blob = await put(pathname, cropped, { access: "public", contentType: "image/webp" });
+          const pathname = `${BLOB_PREFIX}cropped-${Date.now()}.webp`;
+          return await put(pathname, cropped, { access: "public", contentType: "image/webp" });
+        })()
+      );
       return { success: true, path: blob.url };
     } catch (e) {
       return {

@@ -47,12 +47,12 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-20 shadow-sm [padding-left:env(safe-area-inset-left)] [padding-right:env(safe-area-inset-right)]">
-      {/* TopBar – zwei Zeilen, keine Überlappung */}
+      {/* TopBar: Mobile 2 Zeilen (Kontakt + Service), Desktop 1 Zeile */}
       <div
         className="py-2 text-white sm:py-2"
         style={{ backgroundColor: "var(--color-header-footer)" }}
       >
-        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:gap-x-6 sm:text-sm">
             <a
               href={`tel:${settings.contactPhone.replace(/\s/g, "")}`}
@@ -69,7 +69,7 @@ export function Header() {
               <span>{settings.contactEmail}</span>
             </a>
           </div>
-          <nav className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-white/20 pt-2 text-xs sm:gap-x-6 sm:text-sm" aria-label="Service-Navigation">
+          <nav className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-white/20 pt-2 text-xs sm:border-0 sm:pt-0 sm:gap-x-6 sm:text-sm" aria-label="Service-Navigation">
             {(nav.service.length ? nav.service : siteContent.nav.service).map((item) => (
               <Link
                 key={"id" in item ? (item as { id: string }).id : (item as { href: string }).href}
