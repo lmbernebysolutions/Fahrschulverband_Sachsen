@@ -38,7 +38,7 @@ export function GeschaeftsstelleSection({
 
   return (
     <div className="mt-12 grid gap-6 md:grid-cols-2">
-      {geschaeftsstelle.mitarbeiter.map((m, index) => (
+      {geschaeftsstelle.mitarbeiter.map((m) => (
         <PersonCardWithImage
           key={m.name}
           name={m.name}
@@ -46,7 +46,7 @@ export function GeschaeftsstelleSection({
           email={m.email}
           imagePath={settings.imageAssignments?.[m.slotId]?.imagePath}
         >
-          <details className="group/details" open={index === 0}>
+          <details className="group/details">
             <summary className="flex cursor-pointer list-none items-center gap-2 py-1 text-sm font-medium text-neutral-700 hover:text-neutral-900 [&::-webkit-details-marker]:hidden">
               <ChevronDown className="size-4 shrink-0 text-neutral-500 transition-transform group-open/details:rotate-180" />
               <span>Aufgabengebiete</span>
