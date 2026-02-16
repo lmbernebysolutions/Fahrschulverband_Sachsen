@@ -4,8 +4,13 @@ const COOKIE_NAME = "site_access";
 const COOKIE_VALUE = "1";
 const MAX_AGE = 60 * 60 * 24 * 7; // 7 Tage
 
+function normalize(s: string): string {
+  return s.replace(/\r\n?/g, "").trim().replace(/^["']|["']$/g, "");
+}
+
 export async function POST(request: NextRequest) {
-  const password = process.env.SITE_PASSWORD;
+  const raw = process.env.SITE_PASSWORD ?? "";
+  const password = normalize(raw);
   if (!password) {
     return NextResponse.json(
       { error: "Passwortschutz ist nicht konfiguriert." },
@@ -20,7 +25,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Ungültige Anfrage." }, { status: 400 });
   }
 
-  const submitted = body.password ?? "";
+  const submitted = normalize(body.password ?? "");
   if (submitted !== password) {
     return NextResponse.json({ error: "Falsches Passwort." }, { status: 401 });
   }

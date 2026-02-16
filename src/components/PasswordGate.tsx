@@ -5,6 +5,7 @@ import { Button } from "@/components/atoms";
 
 export function PasswordGate() {
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -46,21 +47,33 @@ export function PasswordGate() {
         <p className="mt-2 text-sm text-neutral-600">
           Bitte Passwort eingeben, um die Website zu sehen.
         </p>
-        <div className="mt-6">
+        <div className="mt-6 space-y-2">
           <label htmlFor="site-password" className="sr-only">
             Passwort
           </label>
-          <input
-            id="site-password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Passwort"
-            autoFocus
-            autoComplete="current-password"
-            className="w-full rounded-lg border border-neutral-300 px-4 py-3 text-neutral-800 placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-            disabled={loading}
-          />
+          <div className="relative">
+            <input
+              id="site-password"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Passwort"
+              autoFocus
+              autoComplete="current-password"
+              className="w-full rounded-lg border border-neutral-300 px-4 py-3 pr-24 text-neutral-800 placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+              disabled={loading}
+            />
+            <label className="absolute right-2 top-1/2 flex -translate-y-1/2 cursor-pointer items-center gap-1.5 rounded px-2 py-1 text-sm text-neutral-600 hover:bg-neutral-100 hover:text-neutral-800">
+              <input
+                type="checkbox"
+                checked={showPassword}
+                onChange={(e) => setShowPassword(e.target.checked)}
+                className="h-4 w-4 rounded border-neutral-300"
+                aria-label="Passwort anzeigen"
+              />
+              <span>Anzeigen</span>
+            </label>
+          </div>
         </div>
         {error && (
           <p className="mt-3 text-sm text-red-600" role="alert">

@@ -1,0 +1,11 @@
+#!/usr/bin/expect -f
+# Verlinkt einen neuen Vercel Blob Store mit dem aktuellen Projekt (Y + Enter).
+set timeout 60
+set store_name [lindex $argv 0]
+if {$store_name == ""} { set store_name "website-blob" }
+spawn vercel blob store add $store_name --region fra1
+expect "Would you like to link this blob store"
+send "y\r"
+expect "Select environments"
+send "\r"
+expect eof
