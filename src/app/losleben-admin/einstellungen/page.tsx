@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSiteData } from "@/context/SiteDataContext";
 import { Button, Input, Label, Textarea } from "@/components/atoms";
 import { Toast } from "@/components/molecules";
@@ -18,6 +18,19 @@ export default function AdminEinstellungenPage() {
     contactFax: settings.contactFax,
     contactAddress: settings.contactAddress,
   });
+
+  useEffect(() => {
+    setForm({
+      heroHeadline: settings.heroHeadline,
+      heroSubtext: settings.heroSubtext,
+      heroCtaText: settings.heroCtaText,
+      heroCtaLink: settings.heroCtaLink,
+      contactEmail: settings.contactEmail,
+      contactPhone: settings.contactPhone,
+      contactFax: settings.contactFax,
+      contactAddress: settings.contactAddress,
+    });
+  }, [settings]);
   const [toast, setToast] = useState<{
     message: string;
     variant: "success" | "error";

@@ -43,10 +43,21 @@ const STORAGE_KEYS = {
   lastSync: "lsf_lastSync",
 } as const;
 
-// Persistenz: Settings (inkl. Bildzuweisungen) werden von der API geladen und dorthin
-// geschrieben, damit alle Geräte dasselbe sehen. localStorage dient als Fallback/Cache.
+// Persistenz: Alle Admin-Daten werden von der API geladen und bei jeder Änderung dorthin
+// geschrieben (Vercel Blob / Dateisystem). localStorage dient als Cache/Fallback.
 
-const SETTINGS_API = "/api/content/settings";
+const CONTENT_API = "/api/content";
+
+/** Speicher-Key → API-Typ-Name (nur Typen mit API-Persistenz) */
+const STORAGE_KEY_TO_API_TYPE: Partial<Record<string, string>> = {
+  [STORAGE_KEYS.news]: "news",
+  [STORAGE_KEYS.seminars]: "seminars",
+  [STORAGE_KEYS.ads]: "fahrschulmarkt",
+  [STORAGE_KEYS.settings]: "settings",
+  [STORAGE_KEYS.membershipFees]: "membership-fees",
+  [STORAGE_KEYS.websiteNav]: "websiteNav",
+  [STORAGE_KEYS.footerContent]: "footerContent",
+};
 
 function loadFromStorage<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
@@ -68,23 +79,22 @@ function saveToStorage(key: string, value: unknown): void {
   }
 }
 
-async function fetchSettingsFromApi(): Promise<SiteSettings | null> {
+async function fetchContentFromApi(type: string): Promise<unknown> {
   try {
-    const res = await fetch(SETTINGS_API);
+    const res = await fetch(`${CONTENT_API}/${type}`);
     if (!res.ok) return null;
-    const data = (await res.json()) as SiteSettings;
-    return data ?? null;
+    return await res.json();
   } catch {
     return null;
   }
 }
 
-async function saveSettingsToApi(settings: SiteSettings): Promise<boolean> {
+async function saveContentToApi(type: string, payload: unknown): Promise<boolean> {
   try {
-    const res = await fetch(SETTINGS_API, {
+    const res = await fetch(`${CONTENT_API}/${type}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(settings),
+      body: JSON.stringify(payload),
     });
     return res.ok;
   } catch {
@@ -153,28 +163,53 @@ export function SiteDataProvider({ children }: { children: React.ReactNode }) {
     loadFromStorage(STORAGE_KEYS.settings, initialSettings)
   );
 
-  /** Settings von API laden. Bildzuweisungen: API überschreibt nur, wenn API welche hat (sonst lokale behalten, damit Reload nicht löscht). */
+  /** Beim Start alle Inhalte von der API laden (eine Quelle für alle Nutzer). */
   useEffect(() => {
     let cancelled = false;
-    fetchSettingsFromApi().then((apiSettings) => {
-      if (cancelled || !apiSettings) return;
-      setSettings((prev) => {
-        const apiHasAssignments =
-          apiSettings.imageAssignments &&
-          Object.keys(apiSettings.imageAssignments).length > 0;
-        const keepLocalAssignments =
-          !apiHasAssignments &&
-          prev.imageAssignments &&
-          Object.keys(prev.imageAssignments).length > 0;
-        const merged: SiteSettings = {
-          ...apiSettings,
-          imageAssignments: keepLocalAssignments
-            ? prev.imageAssignments
-            : (apiSettings.imageAssignments ?? {}),
-        };
-        saveToStorage(STORAGE_KEYS.settings, merged);
-        return merged;
-      });
+    const types = ["news", "seminars", "fahrschulmarkt", "membership-fees", "settings", "websiteNav", "footerContent"] as const;
+    Promise.all(types.map((t) => fetchContentFromApi(t))).then((results) => {
+      if (cancelled) return;
+      const [apiNews, apiSeminars, apiAds, apiFees, apiSettings, apiNav, apiFooter] = results;
+      if (Array.isArray(apiNews)) {
+        setNews(apiNews as NewsArticle[]);
+        saveToStorage(STORAGE_KEYS.news, apiNews);
+      }
+      if (Array.isArray(apiSeminars)) {
+        setSeminars(apiSeminars as Seminar[]);
+        saveToStorage(STORAGE_KEYS.seminars, apiSeminars);
+      }
+      if (Array.isArray(apiAds)) {
+        setFahrschulAds(apiAds as FahrschulAd[]);
+        saveToStorage(STORAGE_KEYS.ads, apiAds);
+      }
+      if (Array.isArray(apiFees)) {
+        setMembershipFeesState(apiFees as FeeRow[]);
+        saveToStorage(STORAGE_KEYS.membershipFees, apiFees);
+      }
+      if (apiSettings && typeof apiSettings === "object") {
+        const s = apiSettings as SiteSettings;
+        setSettings((prev) => {
+          const apiHasAssignments = s.imageAssignments && Object.keys(s.imageAssignments).length > 0;
+          const keepLocal = !apiHasAssignments && prev.imageAssignments && Object.keys(prev.imageAssignments).length > 0;
+          const merged: SiteSettings = {
+            ...s,
+            imageAssignments: keepLocal ? prev.imageAssignments : (s.imageAssignments ?? {}),
+          };
+          saveToStorage(STORAGE_KEYS.settings, merged);
+          return merged;
+        });
+      }
+      if (apiNav && typeof apiNav === "object") {
+        setWebsiteNavState(apiNav as WebsiteNav);
+        saveToStorage(STORAGE_KEYS.websiteNav, apiNav);
+      }
+      if (apiFooter && typeof apiFooter === "object") {
+        setFooterContentState(apiFooter as FooterContent);
+        saveToStorage(STORAGE_KEYS.footerContent, apiFooter);
+      }
+      const now = new Date().toISOString();
+      setLastSync(now);
+      saveToStorage(STORAGE_KEYS.lastSync, now);
     });
     return () => {
       cancelled = true;
@@ -198,14 +233,18 @@ export function SiteDataProvider({ children }: { children: React.ReactNode }) {
 
   const bezirksverbaende = initialBezirksverbaende;
 
-  const persist = useCallback(
-    (key: string, value: unknown) => {
-      saveToStorage(key, value);
-      setLastSync(new Date().toISOString());
-      saveToStorage(STORAGE_KEYS.lastSync, new Date().toISOString());
-    },
-    []
-  );
+  const persist = useCallback((key: string, value: unknown) => {
+    saveToStorage(key, value);
+    const now = new Date().toISOString();
+    setLastSync(now);
+    saveToStorage(STORAGE_KEYS.lastSync, now);
+    const apiType = STORAGE_KEY_TO_API_TYPE[key];
+    if (apiType) {
+      saveContentToApi(apiType, value).catch(() => {
+        // Fehler beim API-Schreiben (z. B. Offline): Cache bleibt in localStorage
+      });
+    }
+  }, []);
 
   const setMembershipFees = useCallback(
     (fees: FeeRow[]) => {
@@ -433,9 +472,6 @@ export function SiteDataProvider({ children }: { children: React.ReactNode }) {
       setSettings((prev) => {
         const next = { ...prev, ...updates };
         persist(STORAGE_KEYS.settings, next);
-        saveSettingsToApi(next).catch(() => {
-          // Server schreibgeschützt (z. B. Vercel): weiterhin nur localStorage
-        });
         return next;
       });
     },

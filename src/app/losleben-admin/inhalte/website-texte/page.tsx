@@ -124,6 +124,7 @@ export default function WebsiteTextePage() {
                     value={item.href}
                     onChange={(e) => updateServiceItem(item.id, "href", e.target.value)}
                     className="mt-1 min-h-[52px] text-lg"
+                    placeholder="z. B. /kontakt"
                   />
                 </div>
               </div>
@@ -149,6 +150,7 @@ export default function WebsiteTextePage() {
                       value={item.href}
                       onChange={(e) => updateMainItem(item.id, "href", e.target.value)}
                       className="mt-1 min-h-[52px] text-lg"
+                      placeholder="z. B. /der-verband/ueber-uns"
                     />
                   </div>
                 </div>
@@ -178,7 +180,7 @@ export default function WebsiteTextePage() {
                               updateMainItem(item.id, "children", newChildren);
                             }}
                             className="min-h-[48px] flex-1 text-base"
-                            placeholder="Link"
+                            placeholder="z. B. /der-verband/mitgliedschaft"
                           />
                         </div>
                       ))}

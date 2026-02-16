@@ -23,6 +23,17 @@ const categories = [
   { value: "allgemein", label: "Allgemein" },
 ];
 
+function slugify(text: string): string {
+  const s = text
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+  return s || "artikel";
+}
+
 const initialForm = {
   title: "",
   slug: "",
@@ -74,15 +85,25 @@ export default function AdminNewsEditPage() {
   ];
 
   const handleSave = useCallback(() => {
+    const rawSlug = form.slug.trim() || slugify(form.title);
+    const others = news.filter((a) => a.id !== article?.id);
+    let slug = rawSlug;
+    let n = 1;
+    while (others.some((a) => a.slug === slug)) {
+      slug = `${rawSlug}-${n}`;
+      n += 1;
+    }
+    const payload = { ...form, slug };
+
     if (isNew) {
-      addNews(form);
+      addNews(payload);
       setToast({ message: "Artikel erstellt.", variant: "success" });
     } else if (article) {
-      updateNews(article.id, form);
+      updateNews(article.id, payload);
       setToast({ message: "Artikel gespeichert.", variant: "success" });
     }
     setTimeout(() => router.push("/losleben-admin/news"), 800);
-  }, [isNew, article, form, addNews, updateNews, router]);
+  }, [isNew, article, form, news, addNews, updateNews, router]);
 
   if (!isNew && !article) return null;
 

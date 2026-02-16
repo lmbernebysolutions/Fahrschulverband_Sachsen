@@ -73,7 +73,7 @@ export function Header() {
             {(nav.service.length ? nav.service : siteContent.nav.service).map((item) => (
               <Link
                 key={"id" in item ? (item as { id: string }).id : (item as { href: string }).href}
-                href={item.href}
+                href={item.href?.trim() || "/"}
                 className="text-white hover:text-white/90"
               >
                 {item.label}
@@ -115,7 +115,7 @@ export function Header() {
                   onMouseLeave={() => setOpenDropdown(null)}
                 >
                   <Link
-                    href={item.href}
+                    href={item.href?.trim() || "/"}
                     className={cn(
                       "flex min-h-[48px] min-w-[48px] items-center py-3 px-4 text-lg font-medium transition-colors",
                       isParentActive(item)
@@ -136,10 +136,10 @@ export function Header() {
                     {item.children.map((child) => (
                       <Link
                         key={"id" in child ? (child as { id: string }).id : child.href}
-                        href={child.href}
+                        href={child.href?.trim() || "/"}
                         className={cn(
                           "block py-3 px-4 text-lg hover:bg-primary-50",
-                          isChildActive(item.href, child.href)
+                          isChildActive(item.href || "/", child.href || "/")
                             ? "font-semibold text-primary-500"
                             : "text-neutral-700"
                         )}
@@ -152,10 +152,10 @@ export function Header() {
               ) : (
                 <Link
                   key={"id" in item ? (item as { id: string }).id : item.href}
-                  href={item.href}
+                  href={item.href?.trim() || "/"}
                   className={cn(
                     "flex min-h-[48px] min-w-[48px] items-center py-3 px-4 text-lg font-medium transition-colors",
-                    isActive(item.href)
+                    isActive(item.href || "/")
                       ? "text-primary-500 border-b-2 border-primary-500"
                       : "text-neutral-700 hover:bg-primary-50 hover:text-primary-600"
                   )}
@@ -198,7 +198,7 @@ export function Header() {
               {(nav.main.length ? nav.main : siteContent.nav.main).map((item) => (
                 <div key={"id" in item ? (item as { id: string }).id : item.href} className="border-b border-neutral-100">
                   <Link
-                    href={item.href}
+                    href={item.href?.trim() || "/"}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
                       "block py-4 text-lg font-medium",
@@ -206,7 +206,7 @@ export function Header() {
                         ? isParentActive(item)
                           ? "text-primary-500"
                           : "text-neutral-700"
-                        : isActive(item.href)
+                        : isActive(item.href || "/")
                           ? "text-primary-500"
                           : "text-neutral-700"
                     )}
@@ -218,11 +218,11 @@ export function Header() {
                       {item.children.map((child) => (
                         <Link
                           key={"id" in child ? (child as { id: string }).id : child.href}
-                          href={child.href}
+                          href={child.href?.trim() || "/"}
                           onClick={() => setMobileOpen(false)}
                           className={cn(
                             "block py-2 text-base",
-                            isChildActive(item.href, child.href)
+                            isChildActive(item.href || "/", child.href || "/")
                               ? "font-semibold text-primary-500"
                               : "text-neutral-600"
                           )}

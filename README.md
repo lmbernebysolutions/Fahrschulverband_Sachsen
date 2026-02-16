@@ -10,6 +10,16 @@ Beim ersten Aufruf erscheint eine Zugangsabfrage. Ohne gültiges Passwort ist ke
 - Ohne gesetztes `SITE_PASSWORD` ist der Passwortschutz deaktiviert (nur für lokale Entwicklung sinnvoll).
 - Siehe `.env.example`.
 
+## Kundentest / Testanleitung
+
+1. **Zugang:** Beim ersten Aufruf der Website erscheint die Passwortabfrage. Passwort eingeben (wird vom Betreiber bereitgestellt, z. B. aus `.env` / Vercel: `SITE_PASSWORD`). Der Zugang bleibt für 7 Tage gespeichert.
+2. **Öffentliche Seiten:** Startseite, Der Verband, Für Fahrschulen, Für Fahrschüler, Aktuelles, Kontakt usw. über die Navigation durchklicken – alle Inhalte sind nutzbar.
+3. **Admin-Bereich:** Unter **/losleben-admin** (Link im Header) können Sie alle Inhalte bearbeiten:
+   - **Dashboard:** Startbereich (Überschrift, Text, Button) anpassen und speichern.
+   - **News & Artikel:** Neue Artikel anlegen, bearbeiten, veröffentlichen. Der URL-Kurzname (Slug) wird bei leerer Eingabe automatisch aus dem Titel erzeugt.
+   - **Termine, Fahrschulmarkt, Bilder, Website-Texte (Navigation, Footer, Mitgliedschaft), Tabellen (Beiträge), Einstellungen:** Änderungen werden gespeichert und sind für alle Besucher sichtbar.
+4. **Persistenz:** Alle Admin-Änderungen werden über die API gespeichert (lokal: Dateisystem; auf Vercel: **Vercel Blob**). Dafür auf Vercel die Umgebungsvariable **BLOB_READ_WRITE_TOKEN** setzen (Vercel Blob Storage). Ohne Token sind auf Vercel keine Speicherungen möglich (Hinweis 503).
+
 ## Responsive (Mobile-first)
 
 - **Breakpoints (Tailwind):** `sm` 640px, `md` 768px, `lg` 1024px, `xl` 1280px. Kritische UI (Navigation, Haupt-CTA) ist unterhalb `lg` für Touch optimiert.
