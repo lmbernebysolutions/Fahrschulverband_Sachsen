@@ -54,37 +54,37 @@ export function HeroSection() {
         <div className="absolute bottom-20 left-1/4 h-32 w-32 rotate-45 border-2 border-white" />
       </div>
 
-      <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
         <div className="max-w-2xl">
           <h1 className="font-bold tracking-tight text-white">
             {settings.heroHeadline.includes(" - ") ? (
               <>
-                <span className="block text-4xl md:text-5xl lg:text-6xl">
+                <span className="block text-4xl leading-tight sm:text-5xl md:text-5xl lg:text-6xl">
                   {settings.heroHeadline.split(" - ")[0]}
                 </span>
-                <span className="mt-1 block text-3xl md:text-4xl lg:text-5xl">
+                <span className="mt-3 block text-3xl leading-tight sm:mt-4 sm:text-4xl md:text-4xl lg:mt-4 lg:text-5xl">
                   {settings.heroHeadline.split(" - ").slice(1).join(" - ")}
                 </span>
               </>
             ) : (
-              <span className="text-3xl md:text-4xl lg:text-5xl">
+              <span className="text-3xl leading-tight sm:text-4xl md:text-5xl">
                 {settings.heroHeadline}
               </span>
             )}
           </h1>
-          <p className="mt-6 max-w-xl text-lg text-white">
+          <p className="mt-6 max-w-xl text-lg text-white sm:mt-8 sm:text-xl">
             {settings.heroSubtext}
           </p>
-          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
+          <div className="mt-8 flex flex-col gap-4 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-5 lg:mt-12 lg:gap-6">
             <Link
               href={settings.heroCtaLink}
-              className="inline-flex min-h-[48px] min-w-[48px] w-full items-center justify-center rounded-md bg-white px-7 py-3.5 text-base font-semibold text-primary-600 transition-colors hover:bg-neutral-100 hover:text-primary-700 sm:w-auto"
+              className="inline-flex min-h-[48px] min-w-[48px] w-full items-center justify-center rounded-md bg-white px-7 py-3.5 text-base font-semibold text-primary-600 transition-colors hover:bg-neutral-100 hover:text-primary-700 sm:w-auto sm:py-4 sm:text-lg"
             >
               {settings.heroCtaText}
             </Link>
             <Link
               href="/fuer-fahrschueler/fahrschulsuche"
-              className="inline-flex min-h-[48px] min-w-[48px] w-full items-center justify-center rounded-md border-2 border-white px-7 py-3.5 text-base font-semibold text-white transition-colors hover:bg-white/10 sm:w-auto"
+              className="inline-flex min-h-[48px] min-w-[48px] w-full items-center justify-center rounded-md border-2 border-white px-7 py-3.5 text-base font-semibold text-white transition-colors hover:bg-white/10 sm:w-auto sm:py-4 sm:text-lg"
             >
               Fahrschule finden
             </Link>

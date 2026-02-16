@@ -47,34 +47,34 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-20 shadow-sm [padding-left:env(safe-area-inset-left)] [padding-right:env(safe-area-inset-right)]">
-      {/* TopBar – kompakt, eine Zeile (Desktop + Mobile) */}
+      {/* TopBar – zwei Zeilen, keine Überlappung */}
       <div
-        className="py-1.5 text-white"
+        className="py-2 text-white sm:py-2"
         style={{ backgroundColor: "var(--color-header-footer)" }}
       >
-        <div className="mx-auto flex max-w-7xl flex-nowrap items-center justify-between gap-2 px-4 text-xs sm:gap-3 sm:px-6 sm:text-sm lg:px-8">
-          <div className="flex min-w-0 shrink items-center gap-2 sm:gap-4">
+        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:gap-x-6 sm:text-sm">
             <a
               href={`tel:${settings.contactPhone.replace(/\s/g, "")}`}
-              className="flex shrink-0 items-center gap-1.5 text-white hover:text-white/90"
+              className="flex items-center gap-1.5 text-white hover:text-white/90"
             >
               <Phone className="size-4 shrink-0" aria-hidden />
-              <span className="truncate">{settings.contactPhone}</span>
+              <span>{settings.contactPhone}</span>
             </a>
             <a
               href={`mailto:${settings.contactEmail}`}
-              className="flex shrink-0 items-center gap-1.5 text-white hover:text-white/90"
+              className="flex items-center gap-1.5 text-white hover:text-white/90"
             >
               <Mail className="size-4 shrink-0" aria-hidden />
-              <span className="hidden truncate sm:inline">{settings.contactEmail}</span>
+              <span>{settings.contactEmail}</span>
             </a>
           </div>
-          <nav className="flex shrink-0 items-center gap-2 sm:gap-3" aria-label="Service-Navigation">
+          <nav className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-white/20 pt-2 text-xs sm:gap-x-6 sm:text-sm" aria-label="Service-Navigation">
             {(nav.service.length ? nav.service : siteContent.nav.service).map((item) => (
               <Link
                 key={"id" in item ? (item as { id: string }).id : (item as { href: string }).href}
                 href={item.href}
-                className="whitespace-nowrap text-white hover:text-white/90"
+                className="text-white hover:text-white/90"
               >
                 {item.label}
               </Link>
