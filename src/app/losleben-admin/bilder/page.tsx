@@ -178,7 +178,7 @@ export default function AdminBilderPage() {
                 : "Dateien hierher ziehen oder klicken"}
           </p>
           <p className="mt-1 text-xs text-neutral-500">
-            {uploading ? "Bitte warten, Zeitlimit 60 Sekunden pro Bild." : "PNG, JPG, WebP – max. 10 MB"}
+            {uploading ? "Bitte warten …" : "PNG, JPG, WebP – max. 10 MB. Große Bilder werden automatisch verkleinert."}
           </p>
         </div>
 

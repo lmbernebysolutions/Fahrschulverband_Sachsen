@@ -8,6 +8,7 @@ import { AdminBreadcrumbs, LargeButton } from "@/components/admin";
 import { EditableTable } from "@/components/admin/organisms/EditableTable";
 import { ExcelDropzone } from "@/components/admin/organisms/ExcelDropzone";
 import { Toast } from "@/components/molecules";
+import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
 
 export default function MitgliedschaftTabellenPage() {
   const {
@@ -23,6 +24,7 @@ export default function MitgliedschaftTabellenPage() {
     variant: "success" | "error";
   } | null>(null);
   const [importOpen, setImportOpen] = useState(false);
+  useLockBodyScroll(importOpen);
   const [importPreview, setImportPreview] = useState<FeeRow[] | null>(null);
   const [importFile, setImportFile] = useState<File | null>(null);
   const [importError, setImportError] = useState<string | null>(null);

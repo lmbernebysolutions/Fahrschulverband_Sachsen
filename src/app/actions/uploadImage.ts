@@ -155,7 +155,7 @@ export async function uploadImageWithCrop(formData: FormData): Promise<
     return {
       success: false,
       error:
-        "Das Bild ist nicht angekommen. Bitte ein kleineres Bild (z. B. unter 4 MB) wählen, einen anderen Browser versuchen oder die Verbindung prüfen.",
+        "Das Bild ist nicht angekommen. Bitte Verbindung prüfen oder anderen Browser versuchen.",
     };
   }
 

@@ -153,13 +153,28 @@ export function SiteDataProvider({ children }: { children: React.ReactNode }) {
     loadFromStorage(STORAGE_KEYS.settings, initialSettings)
   );
 
-  /** Settings von API laden, damit alle Geräte dieselben Bildzuweisungen sehen */
+  /** Settings von API laden. Bildzuweisungen: API überschreibt nur, wenn API welche hat (sonst lokale behalten, damit Reload nicht löscht). */
   useEffect(() => {
     let cancelled = false;
     fetchSettingsFromApi().then((apiSettings) => {
       if (cancelled || !apiSettings) return;
-      setSettings(apiSettings);
-      saveToStorage(STORAGE_KEYS.settings, apiSettings);
+      setSettings((prev) => {
+        const apiHasAssignments =
+          apiSettings.imageAssignments &&
+          Object.keys(apiSettings.imageAssignments).length > 0;
+        const keepLocalAssignments =
+          !apiHasAssignments &&
+          prev.imageAssignments &&
+          Object.keys(prev.imageAssignments).length > 0;
+        const merged: SiteSettings = {
+          ...apiSettings,
+          imageAssignments: keepLocalAssignments
+            ? prev.imageAssignments
+            : (apiSettings.imageAssignments ?? {}),
+        };
+        saveToStorage(STORAGE_KEYS.settings, merged);
+        return merged;
+      });
     });
     return () => {
       cancelled = true;

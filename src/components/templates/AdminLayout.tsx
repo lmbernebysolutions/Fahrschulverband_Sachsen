@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Menu } from "lucide-react";
 import { AdminSidebar } from "@/components/organisms/AdminSidebar";
 import { cn } from "@/lib/utils";
+import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
 
 export interface AdminLayoutProps {
   children: React.ReactNode;
@@ -12,6 +13,7 @@ export interface AdminLayoutProps {
 
 export function AdminLayout({ children }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  useLockBodyScroll(sidebarOpen);
 
   return (
     <div className="min-h-screen bg-neutral-50">

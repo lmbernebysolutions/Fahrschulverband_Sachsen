@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import ReactCrop, {
   type Crop,
   type PercentCrop,
@@ -13,11 +13,15 @@ import { X } from "lucide-react";
 import { Button } from "@/components/atoms";
 import { uploadImageWithCrop, cropExistingImage } from "@/app/actions/uploadImage";
 import type { ImageSlotId } from "@/lib/imageUsage";
+import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
+import { compressImageFile, COMPRESS_THRESHOLD_BYTES } from "@/lib/compressImage";
 
 const DEFAULT_ASPECT = 4 / 3;
 /** Hero-Bereich: min-h 500px, volle Breite → typisch 3:1 (z. B. 1440×500) */
 const HERO_ASPECT = 3 / 1;
 const MAX_SIZE_MB = 10;
+/** Nach dieser Zeit wird "Upload dauert zu lange" angezeigt und der Zustand zurückgesetzt */
+const UPLOAD_TIMEOUT_CLIENT_MS = 70_000;
 
 function centerAspectCrop(
   mediaWidth: number,
@@ -69,6 +73,20 @@ export function ImageAssignModal({
   const [error, setError] = useState<string | null>(null);
   const imgRef = useRef<HTMLImageElement>(null);
 
+  useLockBodyScroll(true);
+
+  /** Client-Timeout: Wenn der Upload zu lange dauert, Fehler anzeigen und nicht ewig hängen bleiben */
+  useEffect(() => {
+    if (!uploading) return;
+    const t = setTimeout(() => {
+      setError(
+        "Upload dauert zu lange. Bitte abbrechen (Zurück) und erneut versuchen."
+      );
+      setUploading(false);
+    }, UPLOAD_TIMEOUT_CLIENT_MS);
+    return () => clearTimeout(t);
+  }, [uploading]);
+
   const handleFileSelect = useCallback((file: File) => {
     const maxBytes = MAX_SIZE_MB * 1024 * 1024;
     if (file.size > maxBytes) {
@@ -118,8 +136,12 @@ export function ImageAssignModal({
       const aspectStr = aspectRatio === "16/9" ? "16/9" : aspectRatio === "3/4" ? "3/4" : aspectRatio === "auto" ? "3/1" : "4/3";
 
       if (selectedFile) {
+        const fileToUpload =
+          selectedFile.size > COMPRESS_THRESHOLD_BYTES
+            ? await compressImageFile(selectedFile)
+            : selectedFile;
         const formData = new FormData();
-        formData.append("file", selectedFile);
+        formData.append("file", fileToUpload);
         formData.append("cropX", String(percentCrop.x));
         formData.append("cropY", String(percentCrop.y));
         formData.append("cropW", String(percentCrop.width));
@@ -160,12 +182,12 @@ export function ImageAssignModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 flex min-h-screen min-h-[100dvh] items-center justify-center overflow-y-auto bg-black/50 p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="image-assign-title"
     >
-      <div className="max-h-[90vh] w-full max-w-2xl overflow-auto rounded-xl bg-white shadow-xl">
+      <div className="my-auto max-h-[90vh] w-full max-w-2xl overflow-auto rounded-xl bg-white shadow-xl">
         <div className="flex items-center justify-between border-b border-neutral-200 p-4">
           <h2 id="image-assign-title" className="text-lg font-semibold text-neutral-900">
             Bild zuweisen: {slotLabel}
@@ -267,13 +289,13 @@ export function ImageAssignModal({
                   <p className="font-medium">Hinweis</p>
                   <p className="mt-1">{error}</p>
                   <p className="mt-2 text-red-700">
-                    Tipp: Kleineres Bild (unter 4 MB) wählen oder anderen Browser versuchen.
+                    Tipp: Anderen Browser versuchen oder später erneut laden.
                   </p>
                 </div>
               )}
               <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
                 <p className="order-last text-xs text-neutral-500 sm:order-none sm:mr-auto sm:self-center">
-                  Bei Problemen: Bild unter 4 MB, Format JPG/PNG/WebP.
+                  Große Bilder werden automatisch verkleinert. Format: JPG, PNG, WebP (max. 10 MB).
                 </p>
                 <div className="flex justify-end gap-2">
                 <Button
