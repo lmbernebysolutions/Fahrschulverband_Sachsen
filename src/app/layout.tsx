@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { Open_Sans } from "next/font/google";
 import { SiteDataProvider } from "@/context/SiteDataContext";
+import { PasswordGate } from "@/components/PasswordGate";
 import "./globals.css";
 
 const openSans = Open_Sans({
@@ -26,11 +28,24 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const hasAccess = cookieStore.get("site_access")?.value === "1";
+
+  if (!hasAccess) {
+    return (
+      <html lang="de">
+        <body className={`${openSans.variable} font-sans antialiased`}>
+          <PasswordGate />
+        </body>
+      </html>
+    );
+  }
+
   return (
     <html lang="de">
       <body className={`${openSans.variable} font-sans antialiased`}>
