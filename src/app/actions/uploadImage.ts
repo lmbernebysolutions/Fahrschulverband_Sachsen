@@ -152,7 +152,11 @@ export async function uploadImageWithCrop(formData: FormData): Promise<
   const [num, den] = TARGET_ASPECTS[aspectRatio as keyof typeof TARGET_ASPECTS] ?? TARGET_ASPECTS["4/3"];
 
   if (!file) {
-    return { success: false, error: "Keine Datei ausgewählt." };
+    return {
+      success: false,
+      error:
+        "Das Bild ist nicht angekommen. Bitte ein kleineres Bild (z. B. unter 4 MB) wählen, einen anderen Browser versuchen oder die Verbindung prüfen.",
+    };
   }
 
   if (!ALLOWED_TYPES.includes(file.type)) {

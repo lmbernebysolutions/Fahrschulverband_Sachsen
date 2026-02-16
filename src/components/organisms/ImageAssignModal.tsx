@@ -6,6 +6,7 @@ import ReactCrop, {
   type PercentCrop,
   centerCrop,
   makeAspectCrop,
+  convertToPercentCrop,
 } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import { X } from "lucide-react";
@@ -102,7 +103,12 @@ export function ImageAssignModal({
   );
 
   const handleCropAndAssign = useCallback(async () => {
-    if (!crop || crop.unit !== "%") return;
+    if (!crop) return;
+    const percentCrop: PercentCrop =
+      crop.unit === "%"
+        ? (crop as PercentCrop)
+        : convertToPercentCrop(crop, imgRef.current?.naturalWidth ?? 1, imgRef.current?.naturalHeight ?? 1);
+
     setUploading(true);
     setError(null);
 
@@ -114,22 +120,23 @@ export function ImageAssignModal({
       if (selectedFile) {
         const formData = new FormData();
         formData.append("file", selectedFile);
-        formData.append("cropX", String(crop.x));
-        formData.append("cropY", String(crop.y));
-        formData.append("cropW", String(crop.width));
-        formData.append("cropH", String(crop.height));
+        formData.append("cropX", String(percentCrop.x));
+        formData.append("cropY", String(percentCrop.y));
+        formData.append("cropW", String(percentCrop.width));
+        formData.append("cropH", String(percentCrop.height));
         formData.append("aspectRatio", aspectStr);
         result = await uploadImageWithCrop(formData);
       } else if (selectedExistingPath) {
         result = await cropExistingImage(
           selectedExistingPath,
-          crop.x,
-          crop.y,
-          crop.width,
-          crop.height,
+          percentCrop.x,
+          percentCrop.y,
+          percentCrop.width,
+          percentCrop.height,
           aspectStr
         );
       } else {
+        setUploading(false);
         return;
       }
 
@@ -137,8 +144,10 @@ export function ImageAssignModal({
         onAssign(result.path);
         onClose();
       } else {
-        setError(result.error);
+        setError(result.error ?? "Upload fehlgeschlagen.");
       }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Zuschneiden oder Upload fehlgeschlagen. Bitte erneut versuchen.");
     } finally {
       setUploading(false);
     }
@@ -254,12 +263,23 @@ export function ImageAssignModal({
                 </ReactCrop>
               </div>
               {error && (
-                <p className="text-sm text-red-600">{error}</p>
+                <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+                  <p className="font-medium">Hinweis</p>
+                  <p className="mt-1">{error}</p>
+                  <p className="mt-2 text-red-700">
+                    Tipp: Kleineres Bild (unter 4 MB) wählen oder anderen Browser versuchen.
+                  </p>
+                </div>
               )}
-              <div className="flex justify-end gap-2">
+              <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+                <p className="order-last text-xs text-neutral-500 sm:order-none sm:mr-auto sm:self-center">
+                  Bei Problemen: Bild unter 4 MB, Format JPG/PNG/WebP.
+                </p>
+                <div className="flex justify-end gap-2">
                 <Button
                   variant="secondary"
                   onClick={() => {
+                    setError(null);
                     setStep("choose");
                     if (selectedFile && previewUrl?.startsWith("blob:")) {
                       URL.revokeObjectURL(previewUrl);
@@ -278,6 +298,7 @@ export function ImageAssignModal({
                 >
                   {uploading ? "Wird verarbeitet… (bitte warten)" : "Zuschneiden & Zuweisen"}
                 </Button>
+                </div>
               </div>
             </div>
           )}
