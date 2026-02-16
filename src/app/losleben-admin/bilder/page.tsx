@@ -21,6 +21,7 @@ import {
   IMAGE_PAGES,
   getSlotDisplaySize,
 } from "@/lib/imageUsage";
+import { compressImageFile, COMPRESS_THRESHOLD_BYTES } from "@/lib/compressImage";
 import { ImageAssignModal } from "@/components/organisms/ImageAssignModal";
 import { useSiteData } from "@/context/SiteDataContext";
 import { Toast } from "@/components/molecules";
@@ -67,8 +68,12 @@ export default function AdminBilderPage() {
         for (let i = 0; i < acceptedFiles.length; i++) {
           setUploadProgress({ current: i + 1, total: acceptedFiles.length });
           const file = acceptedFiles[i];
+          const fileToUpload =
+            file.size > COMPRESS_THRESHOLD_BYTES
+              ? await compressImageFile(file)
+              : file;
           const formData = new FormData();
-          formData.append("file", file);
+          formData.append("file", fileToUpload);
           const result = await uploadImage(formData);
           if (result.success) {
             setUploaded((prev) => [...prev, result.path]);
@@ -80,6 +85,15 @@ export default function AdminBilderPage() {
           }
         }
         await loadImages();
+      } catch (e) {
+        const errStr = typeof e === "string" ? e : (e as Error)?.message ?? String(e);
+        const is413 =
+          errStr.includes("413") || errStr.toLowerCase().includes("too large") || errStr.toLowerCase().includes("content too large");
+        const msg = is413
+          ? "Anfrage zu groß (413). Große Bilder werden automatisch verkleinert – bitte erneut versuchen."
+          : "Upload fehlgeschlagen. Bitte erneut versuchen.";
+        setError(msg);
+        setToast({ message: msg, variant: "error" });
       } finally {
         setUploading(false);
         setUploadProgress(null);

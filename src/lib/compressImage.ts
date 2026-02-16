@@ -58,5 +58,5 @@ export async function compressImageFile(file: File): Promise<File> {
   });
 }
 
-/** Ab dieser Größe wird komprimiert (1.5 MB), darunter wird das Original gesendet */
-export const COMPRESS_THRESHOLD_BYTES = 1.5 * 1024 * 1024;
+/** Ab dieser Größe wird komprimiert (1 MB), damit Vercel-Limit ~4.5 MB nicht getroffen wird */
+export const COMPRESS_THRESHOLD_BYTES = 1 * 1024 * 1024;

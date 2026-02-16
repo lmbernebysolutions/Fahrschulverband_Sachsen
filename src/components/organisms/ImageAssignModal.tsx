@@ -140,6 +140,14 @@ export function ImageAssignModal({
           selectedFile.size > COMPRESS_THRESHOLD_BYTES
             ? await compressImageFile(selectedFile)
             : selectedFile;
+        const maxSafeBytes = 4 * 1024 * 1024;
+        if (fileToUpload.size > maxSafeBytes) {
+          setError(
+            "Bild konnte nicht klein genug verkleinert werden. Bitte anderes Bild oder anderen Browser versuchen."
+          );
+          setUploading(false);
+          return;
+        }
         const formData = new FormData();
         formData.append("file", fileToUpload);
         formData.append("cropX", String(percentCrop.x));
@@ -169,7 +177,13 @@ export function ImageAssignModal({
         setError(result.error ?? "Upload fehlgeschlagen.");
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Zuschneiden oder Upload fehlgeschlagen. Bitte erneut versuchen.");
+      const msg = e instanceof Error ? e.message : String(e);
+      const is413 = msg.includes("413") || msg.toLowerCase().includes("too large");
+      setError(
+        is413
+          ? "Anfrage zu groß (413). Das Bild wird automatisch verkleinert – bitte erneut auf „Zuschneiden & Zuweisen“ klicken."
+          : msg || "Zuschneiden oder Upload fehlgeschlagen. Bitte erneut versuchen."
+      );
     } finally {
       setUploading(false);
     }
