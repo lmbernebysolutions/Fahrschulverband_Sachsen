@@ -1,4 +1,14 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Landesverband Sächsischer Fahrlehrer e.V. – Website
+
+Next.js-Website mit Admin-Bereich (`/losleben-admin`).
+
+## Passwortschutz
+
+Beim ersten Aufruf erscheint eine Zugangsabfrage. Ohne gültiges Passwort ist kein Seiteninhalt sichtbar.
+
+- **Umgebung:** In `.env.local` (lokal) bzw. in Vercel unter **Environment Variables** setzen: `SITE_PASSWORD` = gewünschtes Passwort (für dieses Projekt: **Losleben2026**).
+- Ohne gesetztes `SITE_PASSWORD` ist der Passwortschutz deaktiviert (nur für lokale Entwicklung sinnvoll).
+- Siehe `.env.example`.
 
 ## Getting Started
 

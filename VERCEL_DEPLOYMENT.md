@@ -1,5 +1,11 @@
 # Vercel Deployment – Übersicht
 
+## Passwortschutz (Vercel)
+
+In den **Vercel Environment Variables** setzen: `SITE_PASSWORD` = **Losleben2026** (oder eigenes Passwort). Ohne diese Variable ist der Zugang offen.
+
+---
+
 ## Kurzantwort: **Teilweise ja**
 
 - **Website (öffentliche Seiten)** → funktioniert auf Vercel.
