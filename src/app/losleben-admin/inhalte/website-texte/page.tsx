@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useSiteData } from "@/context/SiteDataContext";
-import type { FooterContent, NavServiceItem, NavigationItem, Offer, WebsiteNav } from "@/lib/mockData";
+import type { FooterContent, NavServiceItem, NavigationItem, WebsiteNav } from "@/lib/mockData";
 import { AdminBreadcrumbs, LargeButton } from "@/components/admin";
 import { Button, Input, Label, Textarea } from "@/components/atoms";
 import { Toast } from "@/components/molecules";
@@ -14,15 +14,12 @@ export default function WebsiteTextePage() {
     setWebsiteNav,
     footerContent,
     setFooterContent,
-    offers,
-    setOffers,
-    updateOffer,
-    addOffer,
-    deleteOffer,
+    settings,
+    updateSettings,
   } = useSiteData();
 
   const [toast, setToast] = useState<{ message: string; variant: "success" | "error" } | null>(null);
-  const [activeSection, setActiveSection] = useState<"nav" | "footer" | "angebote">("nav");
+  const [activeSection, setActiveSection] = useState<"nav" | "footer" | "mitgliedschaft">("nav");
 
   const saveNav = () => {
     setWebsiteNav(websiteNav);
@@ -59,7 +56,7 @@ export default function WebsiteTextePage() {
           Website-Texte
         </h1>
         <p className="mt-2 text-lg text-neutral-600">
-          Navigation, Footer und Angebote des Landesverbandes bearbeiten.
+          Navigation, Footer und Texte der Seite „Mitgliedschaft“ bearbeiten.
         </p>
       </div>
 
@@ -94,15 +91,15 @@ export default function WebsiteTextePage() {
         </button>
         <button
           type="button"
-          onClick={() => setActiveSection("angebote")}
+          onClick={() => setActiveSection("mitgliedschaft")}
           className={cn(
             "min-h-[52px] rounded-lg px-6 py-3 text-lg font-medium transition-colors",
-            activeSection === "angebote"
+            activeSection === "mitgliedschaft"
               ? "bg-primary-600 text-white"
               : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
           )}
         >
-          Angebote
+          Mitgliedschaft (Seite)
         </button>
       </div>
 
@@ -321,59 +318,60 @@ export default function WebsiteTextePage() {
         </div>
       )}
 
-      {activeSection === "angebote" && (
+      {activeSection === "mitgliedschaft" && (
         <div className="rounded-xl border border-neutral-200 bg-white p-8 shadow-sm">
-          <h2 className="text-xl font-bold text-neutral-900">Angebote des Landesverbandes</h2>
-          <p className="mt-1 text-neutral-600">Rahmenverträge, Fahrlehrer-Info, Fahrschulsuche usw.</p>
-          <div className="mt-6 space-y-8">
-            {[...offers].sort((a, b) => a.order - b.order).map((offer) => (
-              <div key={offer.id} className="rounded-lg border border-neutral-200 p-6">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0 flex-1 space-y-4">
-                    <div>
-                      <Label className="text-lg">Titel</Label>
-                      <Input
-                        value={offer.title}
-                        onChange={(e) => updateOffer(offer.id, { title: e.target.value })}
-                        className="mt-2 min-h-[52px] text-lg"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-lg">Text</Label>
-                      <Textarea
-                        value={offer.text}
-                        onChange={(e) => updateOffer(offer.id, { text: e.target.value })}
-                        rows={5}
-                        className="mt-2 text-lg"
-                      />
-                    </div>
-                  </div>
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    onClick={() => {
-                      if (confirm("Angebot wirklich entfernen?")) deleteOffer(offer.id);
-                    }}
-                  >
-                    Entfernen
-                  </Button>
-                </div>
-              </div>
-            ))}
+          <h2 className="text-xl font-bold text-neutral-900">Seite „Mitgliedschaft“</h2>
+          <p className="mt-1 text-neutral-600">Texte, die auf /der-verband/mitgliedschaft angezeigt werden. Leer = Standardtext aus der Redaktion.</p>
+          <div className="mt-6 space-y-6">
+            <div>
+              <Label className="text-base">Intro-Text (oberer Bereich)</Label>
+              <Textarea
+                value={settings.mitgliedschaftIntro ?? ""}
+                onChange={(e) => updateSettings({ mitgliedschaftIntro: e.target.value })}
+                rows={4}
+                placeholder="Leer lassen = Standardtext"
+                className="mt-2 text-lg"
+              />
+            </div>
+            <div>
+              <Label className="text-base">Beitritt – Überschrift</Label>
+              <Input
+                value={settings.mitgliedschaftBeitrittHeadline ?? ""}
+                onChange={(e) => updateSettings({ mitgliedschaftBeitrittHeadline: e.target.value })}
+                placeholder="z. B. Haben wir Ihr Interesse geweckt?"
+                className="mt-2 min-h-[52px] text-lg"
+              />
+            </div>
+            <div>
+              <Label className="text-base">Beitritt – Text</Label>
+              <Textarea
+                value={settings.mitgliedschaftBeitrittText ?? ""}
+                onChange={(e) => updateSettings({ mitgliedschaftBeitrittText: e.target.value })}
+                rows={4}
+                placeholder="Leer lassen = Standardtext"
+                className="mt-2 text-lg"
+              />
+            </div>
+            <div>
+              <Label className="text-base">Beitritt – Button-Text</Label>
+              <Input
+                value={settings.mitgliedschaftBeitrittButton ?? ""}
+                onChange={(e) => updateSettings({ mitgliedschaftBeitrittButton: e.target.value })}
+                placeholder="z. B. Beitrittserklärung (PDF)"
+                className="mt-2 min-h-[52px] text-lg"
+              />
+            </div>
           </div>
-          <div className="mt-6 flex flex-wrap gap-4">
-            <LargeButton variant="secondary" size="xl" onClick={addOffer}>
-              + Neues Angebot
-            </LargeButton>
+          <div className="mt-6">
             <LargeButton
               variant="primary"
               size="xl"
               onClick={() => {
-                setOffers(offers);
-                setToast({ message: "Angebote gespeichert.", variant: "success" });
+                updateSettings(settings);
+                setToast({ message: "Mitgliedschaft-Texte gespeichert.", variant: "success" });
               }}
             >
-              Angebote speichern
+              Mitgliedschaft-Texte speichern
             </LargeButton>
           </div>
         </div>

@@ -42,7 +42,7 @@ export default function MitgliedschaftPage() {
                 In einer Verbandsfahrschule sind Sie immer gut beraten
               </h2>
               <p className="mt-6 text-lg leading-relaxed text-neutral-700">
-                {intro}
+                {settings.mitgliedschaftIntro?.trim() || intro}
               </p>
             </div>
           </div>
@@ -168,15 +168,17 @@ export default function MitgliedschaftPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="rounded-xl bg-white p-8 shadow-card">
             <h2 className="text-2xl font-bold text-primary-500">
-              {beitritt.headline}
+              {settings.mitgliedschaftBeitrittHeadline?.trim() || beitritt.headline}
             </h2>
-            <p className="mt-6 text-lg text-neutral-700">{beitritt.text}</p>
+            <p className="mt-6 text-lg text-neutral-700">
+              {settings.mitgliedschaftBeitrittText?.trim() || beitritt.text}
+            </p>
             <Button
               variant="primary"
               icon={Download}
               className="mt-6"
             >
-              {beitritt.buttonText}
+              {settings.mitgliedschaftBeitrittButton?.trim() || beitritt.buttonText}
             </Button>
             <div className="mt-8 border-t border-neutral-200 pt-6">
               <p className="font-medium text-neutral-800">

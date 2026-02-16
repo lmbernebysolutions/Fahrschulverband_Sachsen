@@ -80,6 +80,11 @@ export interface SiteSettings {
   contactAddress: string;
   /** Zugewiesene Bilder pro Slot (ersetzt PlaceholderImage) */
   imageAssignments?: Record<string, ImageAssignment>;
+  /** Seite Mitgliedschaft – bearbeitbar unter Website-Texte */
+  mitgliedschaftIntro?: string;
+  mitgliedschaftBeitrittHeadline?: string;
+  mitgliedschaftBeitrittText?: string;
+  mitgliedschaftBeitrittButton?: string;
 }
 
 /** Einzelzeile der Mitgliedschaftsbeiträge-Tabelle (editierbar, Excel-Import) */
@@ -343,6 +348,10 @@ export const initialSettings: SiteSettings = {
   contactFax: "0351 478 68-12",
   contactAddress: "Bernhardstr. 35, 01187 Dresden",
   imageAssignments: {},
+  mitgliedschaftIntro: "",
+  mitgliedschaftBeitrittHeadline: "",
+  mitgliedschaftBeitrittText: "",
+  mitgliedschaftBeitrittButton: "",
 };
 
 /** Mitgliedschaftsbeiträge (editierbar, Excel-Import) – aus siteContent.mitgliedschaft.beitrag.saetze */
