@@ -106,7 +106,8 @@ export function Footer() {
                         </button>
                         {openNav[item.href] && (
                           <ul className="ml-2 mt-1 space-y-1 border-l-2 border-white/20 pl-3">
-                            {!item.children.some((c) => c.href === item.href) && (
+                            {!item.children.some((c) => c.href === item.href) &&
+                              item.label !== "Für Fahrschüler" && (
                               <li>
                                 <Link
                                   href={item.href}
