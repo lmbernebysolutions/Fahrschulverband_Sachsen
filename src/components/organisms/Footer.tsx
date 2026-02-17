@@ -106,14 +106,16 @@ export function Footer() {
                         </button>
                         {openNav[item.href] && (
                           <ul className="ml-2 mt-1 space-y-1 border-l-2 border-white/20 pl-3">
-                            <li>
-                              <Link
-                                href={item.href}
-                                className="block py-1 text-white/90 hover:text-white"
-                              >
-                                Übersicht
-                              </Link>
-                            </li>
+                            {!item.children.some((c) => c.href === item.href) && (
+                              <li>
+                                <Link
+                                  href={item.href}
+                                  className="block py-1 text-white/90 hover:text-white"
+                                >
+                                  Übersicht
+                                </Link>
+                              </li>
+                            )}
                             {item.children.map((child) => (
                               <li key={child.href}>
                                 <Link
