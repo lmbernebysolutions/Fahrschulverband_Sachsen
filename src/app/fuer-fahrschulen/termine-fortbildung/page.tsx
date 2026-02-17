@@ -53,32 +53,34 @@ export default function TermineFortbildungPage() {
           </p>
           <div className="mt-8 rounded-xl bg-neutral-50 p-6 sm:p-8">
             <div className="space-y-8 sm:grid sm:grid-cols-2 sm:gap-8 sm:space-y-0">
-              <div>
+              <div className="min-w-0">
                 <h3 className="text-sm font-semibold uppercase tracking-wider text-primary-600">
                   Technik & Prüfung
                 </h3>
-                <ul className="mt-3 space-y-3 text-neutral-700" role="list">
+                <ul className="mt-3 space-y-3 text-neutral-700 break-words" role="list">
                   {SEMINARINHALTE_BLOCK_1.map((item) => (
                     <li
                       key={item}
-                      className="relative pl-5 before:absolute before:left-0 before:top-[0.5em] before:block before:size-1.5 before:rounded-full before:bg-primary-500 before:content-['']"
+                      className="flex min-w-0 gap-2 break-words"
                     >
-                      {item}
+                      <span className="mt-[0.65em] size-1.5 shrink-0 rounded-full bg-primary-500" aria-hidden="true" />
+                      <span>{item}</span>
                     </li>
                   ))}
                 </ul>
               </div>
-              <div>
+              <div className="min-w-0">
                 <h3 className="text-sm font-semibold uppercase tracking-wider text-primary-600">
                   Recht, Beruf & Versicherung
                 </h3>
-                <ul className="mt-3 space-y-3 text-neutral-700" role="list">
+                <ul className="mt-3 space-y-3 text-neutral-700 break-words" role="list">
                   {SEMINARINHALTE_BLOCK_2.map((item) => (
                     <li
                       key={item}
-                      className="relative pl-5 before:absolute before:left-0 before:top-[0.5em] before:block before:size-1.5 before:rounded-full before:bg-primary-500 before:content-['']"
+                      className="flex min-w-0 gap-2 break-words"
                     >
-                      {item}
+                      <span className="mt-[0.65em] size-1.5 shrink-0 rounded-full bg-primary-500" aria-hidden="true" />
+                      <span>{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -116,19 +118,20 @@ export default function TermineFortbildungPage() {
           <div className="mt-8 space-y-6">
             <AccordionItem
               title="Theorie-Themen u. a."
-              defaultOpen
               className="border-l-4 border-l-primary-500"
+              defaultOpen={false}
             >
               <ul
-                className="space-y-2 pl-6 text-neutral-700"
+                className="space-y-2 text-neutral-700 break-words"
                 role="list"
               >
                 {SACHSENRING_THEORIE.map((item) => (
                   <li
                     key={item}
-                    className="relative pl-2 before:absolute before:left-0 before:top-[0.5em] before:block before:size-1 before:rounded-full before:bg-primary-500 before:content-['']"
+                    className="flex min-w-0 gap-2 break-words"
                   >
-                    {item}
+                    <span className="mt-[0.65em] size-1.5 shrink-0 rounded-full bg-primary-500" aria-hidden="true" />
+                    <span>{item}</span>
                   </li>
                 ))}
               </ul>
@@ -136,17 +139,19 @@ export default function TermineFortbildungPage() {
             <AccordionItem
               title="Praxis u. a."
               className="border-l-4 border-l-primary-500"
+              defaultOpen={false}
             >
               <ul
-                className="space-y-2 pl-6 text-neutral-700"
+                className="space-y-2 text-neutral-700 break-words"
                 role="list"
               >
                 {SACHSENRING_PRAXIS.map((item) => (
                   <li
                     key={item}
-                    className="relative pl-2 before:absolute before:left-0 before:top-[0.5em] before:block before:size-1 before:rounded-full before:bg-primary-500 before:content-['']"
+                    className="flex min-w-0 gap-2 break-words"
                   >
-                    {item}
+                    <span className="mt-[0.65em] size-1.5 shrink-0 rounded-full bg-primary-500" aria-hidden="true" />
+                    <span>{item}</span>
                   </li>
                 ))}
               </ul>
