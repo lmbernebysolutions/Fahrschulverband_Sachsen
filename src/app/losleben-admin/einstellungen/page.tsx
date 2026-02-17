@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useSiteData } from "@/context/SiteDataContext";
 import { Button, Input, Label, Textarea } from "@/components/atoms";
 import { Toast } from "@/components/molecules";
-import { ImagePlus } from "lucide-react";
 
 export default function AdminEinstellungenPage() {
   const { settings, updateSettings } = useSiteData();
@@ -35,24 +34,10 @@ export default function AdminEinstellungenPage() {
     message: string;
     variant: "success" | "error";
   } | null>(null);
-  const [uploadProgress, setUploadProgress] = useState(0);
 
   const handleSave = () => {
     updateSettings(form);
     setToast({ message: "Einstellungen gespeichert.", variant: "success" });
-  };
-
-  const handleImageUploadSimulation = () => {
-    setUploadProgress(0);
-    const interval = setInterval(() => {
-      setUploadProgress((p) => {
-        if (p >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        return p + 10;
-      });
-    }, 200);
   };
 
   return (
@@ -158,50 +143,6 @@ export default function AdminEinstellungenPage() {
                 }
               />
             </div>
-          </div>
-        </div>
-
-        <div className="rounded-xl bg-white p-8 shadow-card">
-          <h2 className="text-lg font-semibold text-neutral-800">
-            Bild-Upload (Simulation)
-          </h2>
-          <p className="mt-2 text-sm text-neutral-600">
-            Drag-and-Drop Zone – zeigt animierte Optimierung
-          </p>
-          <div
-            className="mt-6 flex min-h-[120px] flex-col items-center justify-center rounded-lg border-2 border-dashed border-neutral-300 bg-neutral-50 p-8"
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              e.preventDefault();
-              handleImageUploadSimulation();
-            }}
-          >
-            <ImagePlus className="size-12 text-neutral-400" />
-            <p className="mt-2 text-sm text-neutral-500">
-              Datei hier ablegen oder klicken
-            </p>
-            <Button
-              variant="secondary"
-              className="mt-4"
-              onClick={handleImageUploadSimulation}
-            >
-              Optimierung simulieren
-            </Button>
-            {uploadProgress > 0 && (
-              <div className="mt-4 w-full max-w-xs">
-                <div className="h-2 overflow-hidden rounded-full bg-neutral-200">
-                  <div
-                    className="h-full bg-primary-500 transition-all duration-200"
-                    style={{ width: `${uploadProgress}%` }}
-                  />
-                </div>
-                <p className="mt-2 text-center text-sm text-neutral-600">
-                  {uploadProgress < 100
-                    ? `Optimierung... ${uploadProgress}%`
-                    : "Original: 2.4 MB → Optimiert: 180 KB"}
-                </p>
-              </div>
-            )}
           </div>
         </div>
 

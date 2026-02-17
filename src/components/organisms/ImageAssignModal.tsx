@@ -19,7 +19,7 @@ import { compressImageFile, COMPRESS_THRESHOLD_BYTES } from "@/lib/compressImage
 const DEFAULT_ASPECT = 4 / 3;
 /** Hero-Bereich: min-h 500px, volle Breite → typisch 3:1 (z. B. 1440×500) */
 const HERO_ASPECT = 3 / 1;
-const MAX_SIZE_MB = 10;
+const MAX_SIZE_MB = 6;
 /** Nach dieser Zeit wird "Upload dauert zu lange" angezeigt und der Zustand zurückgesetzt */
 const UPLOAD_TIMEOUT_CLIENT_MS = 70_000;
 
@@ -310,7 +310,7 @@ export function ImageAssignModal({
               )}
               <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
                 <p className="order-last text-xs text-neutral-500 sm:order-none sm:mr-auto sm:self-center">
-                  Große Bilder werden automatisch verkleinert. Format: JPG, PNG, WebP (max. 10 MB).
+                  Große Bilder werden automatisch verkleinert. Format: JPG, PNG, WebP (max. 6 MB).
                 </p>
                 <div className="flex justify-end gap-2">
                 <Button

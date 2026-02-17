@@ -1,7 +1,7 @@
 /**
  * Client-seitige Bildkomprimierung vor Upload (Best Practice).
  * Verkleinert große Bilder auf max. 1920px Breite und reduziert die Dateigröße,
- * damit der Upload schnell und zuverlässig funktioniert – auch bei 4–10 MB Originalen.
+ * damit der Upload schnell und zuverlässig funktioniert – auch bei 4–6 MB Originalen.
  */
 
 const MAX_WIDTH = 1920;

@@ -20,7 +20,7 @@ function useBlob(): boolean {
   return typeof process.env.BLOB_READ_WRITE_TOKEN === "string" && process.env.BLOB_READ_WRITE_TOKEN.length > 0;
 }
 
-const MAX_SIZE_MB = 10;
+const MAX_SIZE_MB = 6;
 const MAX_WIDTH = 1920;
 const QUALITY = 85;
 const BLOB_PREFIX = "images/";

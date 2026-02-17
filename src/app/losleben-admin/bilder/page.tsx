@@ -126,7 +126,7 @@ export default function AdminBilderPage() {
     [settings.imageAssignments, updateSettings, loadImages]
   );
 
-  const MAX_SIZE_BYTES = 10 * 1024 * 1024;
+  const MAX_SIZE_BYTES = 6 * 1024 * 1024;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -160,7 +160,7 @@ export default function AdminBilderPage() {
       <div>
         <h1 className="text-2xl font-bold text-neutral-900">Bilder</h1>
         <p className="mt-1 text-neutral-500">
-          Mediathek und Bildzuweisungen nach Seiten (PNG, JPG, WebP, max. 10 MB).
+          Mediathek und Bildzuweisungen nach Seiten (PNG, JPG, WebP, max. 6 MB).
         </p>
       </div>
 
@@ -192,7 +192,7 @@ export default function AdminBilderPage() {
                 : "Dateien hierher ziehen oder klicken"}
           </p>
           <p className="mt-1 text-xs text-neutral-500">
-            {uploading ? "Bitte warten …" : "PNG, JPG, WebP – max. 10 MB. Große Bilder werden automatisch verkleinert."}
+            {uploading ? "Bitte warten …" : "PNG, JPG, WebP – max. 6 MB. Große Bilder werden automatisch verkleinert."}
           </p>
         </div>
 
